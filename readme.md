@@ -2,7 +2,7 @@
 
 [![Kaggle Competition](https://img.shields.io/badge/Kaggle-PSTU%20Data%20Craft-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/competitions/pstu-data-craft-transforming-raw-data-into-impact)
 
-Predict critical failures in off-grid, solar-powered water management stations across remote riverine and coastal char areas in Bangladesh. Protect vulnerable communities from saline water intrusion and ensure uninterrupted access to fresh water.
+Build a high-performance machine learning solution to predict critical 7-day failures in off-grid, solar-powered water management stations across remote riverine and coastal char (island) regions of Bangladesh. Protecting vulnerable agricultural lands and drinking water sources from tidal saline intrusion.
 
 ---
 
@@ -12,24 +12,22 @@ Predict critical failures in off-grid, solar-powered water management stations a
 
 ### 📥 Downloading the Dataset
 
-The raw dataset should be placed inside the `dataset/` directory at the project root (not tracked by Git).
+Store the raw dataset in the root `dataset/` directory (ignored by `.gitignore`).
 
-#### Option A: Via Kaggle CLI (Recommended)
-Make sure you have set up your Kaggle API key (`kaggle.json`).
-
+#### Option A: Kaggle CLI (Recommended)
 ```bash
-# 1. Download the competition files
+# 1. Download the competition zip file
 kaggle competitions download -c pstu-data-craft-transforming-raw-data-into-impact
 
-# 2. Extract into the dataset/ directory
+# 2. Extract into dataset/
 mkdir -p dataset
 unzip pstu-data-craft-transforming-raw-data-into-impact.zip -d dataset/
 ```
 
-#### Option B: Manual Download via Browser
+#### Option B: Manual Download
 1. Visit the [Kaggle Competition Data Tab](https://www.kaggle.com/competitions/pstu-data-craft-transforming-raw-data-into-impact/data).
-2. Click **Download All** (or download `train.csv` and `test.csv` individually).
-3. Move/extract the downloaded files into the `dataset/` directory in this workspace:
+2. Download `train.csv` and `test.csv` (or the complete ZIP file).
+3. Place them in the workspace under `dataset/`:
    ```text
    PSTU-Datathon/
    └── dataset/
@@ -39,55 +37,90 @@ unzip pstu-data-craft-transforming-raw-data-into-impact.zip -d dataset/
 
 ---
 
-## 🗂️ Project Structure & Documentation
+## 🗂️ Complete Directory & File Architecture
 
-| Path | Description |
+```text
+PSTU-Datathon/
+├── overview.md                    # Problem domain, background context & scoring rules
+├── dataset_description.md         # Schema specification, feature groups & submission format
+├── missing-exploration.md         # In-depth EDA: zero-variance drops, iid proof, label noise
+├── prompt.md                      # AI Architect Master Prompt for solution ideation
+├── dataset_exploration/           # Automated EDA scripts & profiling output
+│   ├── 01_explore_schema.py       # Column classification & group assignment
+│   ├── 02_convert_to_numeric.py   # Bengali text flag decoder (910 MB -> 63 MB)
+│   ├── 03_profile_and_ghost_hunt.py # Outlier, correlation & distribution profiling
+│   ├── 04_ghost_value_and_bool_pairs.py # Sentinel validation & boolean-pair correlation
+│   ├── README.md                  # Comprehensive findings summary & pipeline guide
+│   └── (reports & summaries)      # Schema, profile, ghost-value & boolean pair reports
+└── ideas/                         # Measured Solution Roadmap & Strategy Index
+    ├── README.md                  # Priority index & benchmark baseline table
+    ├── 00-foundation/             # Data hygiene, StratifiedKFold CV & metric decomposition
+    │   ├── README.md              # Foundation protocol & submission traps
+    │   └── metric-decomposition.md# Deep mathematical breakdown of custom composite score
+    ├── 01-gbdt-core/              # LightGBM / CatBoost / XGBoost core architectures
+    ├── 02-feature-engineering/    # Santander row-stats, domain physics & ratio features
+    ├── 03-threshold-engine/       # Joint composite threshold search (+0.018 score gain)
+    ├── 04-ensemble-diversity/     # Rank-averaging, GBDT blending & neural tabular assessment
+    ├── 05-label-noise/            # Resolution strategy for 3.3% conflicting-label rows
+    └── 06-dead-ends/              # Measured non-working ideas & time-saving traps
+```
+
+---
+
+## 📄 Key Documentation Map
+
+| File / Folder | Purpose & Key Details |
 | :--- | :--- |
-| 📄 [`overview.md`](overview.md) | Complete background, domain context, problem statement, and metric formula. |
-| 📄 [`dataset_description.md`](dataset_description.md) | Detailed schema breakdown, feature groups, and strict submission format rules. |
-| 📁 [`dataset_exploration/`](dataset_exploration/README.md) | Automated EDA scripts: Bengali text decoding (910 MB → 63 MB), schema grouping, ghost value hunt (`-999999`). |
-| 📄 [`missing-exploration.md`](missing-exploration.md) | Advanced EDA findings: constant/duplicate feature elimination, adversarial validation proof, station ID debunk, label noise analysis. |
-| 📄 [`prompt.md`](prompt.md) | Master AI Architect Prompt for solution architecture and multi-directional ideathon generation. |
-| 📁 [`ideas/`](ideas/README.md) | Solution strategy roadmap, metric decomposition, GBDT core, threshold engines, and ensemble designs. |
+| 📄 [`overview.md`](overview.md) | Competition background, problem statement, evaluation objectives, and official formula. |
+| 📄 [`dataset_description.md`](dataset_description.md) | Full breakdown of Base Attributes, Sensor Readings, Financial Metrics, Target, and submission rules. |
+| 📁 [`dataset_exploration/`](dataset_exploration/README.md) | Automated EDA pipeline: decodes Bengali boolean flags (`হ্যাঁ`/`না`), identifies `-999999` sentinel in `base_number_of_dependent_farmers`. |
+| 📄 [`missing-exploration.md`](missing-exploration.md) | Advanced EDA: identifies 12 zero-information columns (6 constant, 6 duplicates), proves i.i.d train/test split (adversarial AUC 0.4985), debunks pseudo-station IDs, and quantifies label noise. |
+| 📄 [`prompt.md`](prompt.md) | Reusable Master AI Architect Prompt to generate system architecture, multi-directional strategy, and solution proposals. |
+| 📁 [`ideas/`](ideas/README.md) | Priority-ordered solution strategy (00 Foundation → 03 Threshold Engine → 01 GBDT Core → 02 Feature Eng → 04 Ensembles → 05 Label Noise → 06 Dead Ends). |
+| 📄 [`ideas/00-foundation/metric-decomposition.md`](ideas/00-foundation/metric-decomposition.md) | Mathematical decomposition of the 6 sub-metrics and exact submission threshold dynamics. |
 
 ---
 
-## 📊 Competition Summary
+## 📊 Competition Benchmarks & Metric Landscape
 
-- **Task:** Binary classification + probability estimation for 7-day station failure.
-- **Dataset Size:** 48,128 train rows, 12,032 test rows, 286 features + 1 target (`Your_Target_Column`).
-- **Class Imbalance:** 5.0% positive failure rate (45,722 Normal vs. 2,406 Failure).
-- **Custom Composite Metric:**
-  $$\text{FinalScore} = (0.30 \times F1) + (0.25 \times ROCAUC) + (0.15 \times Precision) + (0.15 \times Recall) + (0.10 \times BalancedAccuracy) + (0.05 \times Specificity)$$
+The evaluation metric is a weighted sum of 6 components:
+$$\text{FinalScore} = (0.30 \times F1) + (0.25 \times ROCAUC) + (0.15 \times Precision) + (0.15 \times Recall) + (0.10 \times BalancedAccuracy) + (0.05 \times Specificity)$$
 
----
+### Measured Benchmark Scores (5-Fold CV OOF)
 
-## 🔬 Key EDA Findings
-
-1. **Bengali Text Flag Encoding:** 63 columns originally contained full Bengali sentences ("না, এই স্টেশনটির..."). Converted to `0`/`1` boolean flags, reducing dataset size from 910 MB to 63 MB with 0 information loss.
-2. **Ghost Missing Value Marker:** `-999999` occurs exclusively in `base_number_of_dependent_farmers` (0.14% train / 0.19% test rows). Replaced with `NaN`.
-3. **Column Hygiene:** 12 columns dropped with zero loss (6 constant columns with 0 variance, 6 exact duplicate column pairs).
-4. **Train-Test Covariate Shift:** Adversarial validation AUC = 0.4985 (chance level), confirming train and test sets are i.i.d.
-5. **Validation Strategy:** Pseudo-station clustering proved to be coincidental collisions on dominant fill values rather than real station IDs. **`StratifiedKFold`** is the correct leak-free validation strategy.
-6. **Conflicting Label Noise:** 7.35% of train rows are exact feature duplicates, with 3.3% having conflicting target labels (identical features, opposite target), requiring soft-labeling or sample-weight adjustments.
-7. **Train-Test Overlap:** 7.3% of test rows match a train row exactly on all features.
+| Model Strategy | Composite Score | Notes |
+| :--- | :---: | :--- |
+| **All-Zeros Baseline** (`0` for all rows) | `0.3028` | Pure accuracy floor |
+| **All-Ones Baseline** (`1` for all rows) | `0.4388` | Non-trivial score floor without modeling |
+| **RandomForest Baseline (Naive 0.5 threshold)** | `0.4987` | Standard default cutoff |
+| **RandomForest Baseline (Tuned threshold ~0.60)** | `0.5167` | **+0.018 gain** from threshold tuning alone |
+| **HistGradientBoosting (LightGBM equivalent)** | `0.5269` | Strong tree baseline with tuned threshold |
+| **Realistic Competitive Ceiling (Target)** | **`~0.5400 – 0.5600`** | Tight competitive margin |
 
 ---
 
-## 🚀 Quickstart & Pipeline Execution
+## 🔬 Core Exploratory Insights
 
-To run the dataset preprocessing and exploration pipeline:
+1. **Bengali Text Flag Encoding:** 63 columns were full Bengali text sentences (`"হ্যাঁ..."` / `"না..."`). Decoded into clean `1`/`0` booleans, shrinking train size from 910 MB to 63 MB.
+2. **Ghost Missing Value Marker:** Exactly one column (`base_number_of_dependent_farmers`) contains `-999999` (0.14% train / 0.19% test rows). Handled as `NaN`.
+3. **Santander Origin & Column Hygiene:** The numeric skeleton (`num_var*`, `num_op_var*`) mirrors Santander Customer Satisfaction. 12 columns dropped with zero loss (6 constant columns, 6 identical column duplicates).
+4. **Leak-Free CV Validation:** Adversarial validation score = 0.4985 (i.i.d split). Station ID grouping by `base_*` features was proven to be coincidental collisions on a dominant fill value. **`StratifiedKFold`** is the validated CV strategy.
+5. **Label Noise & Exact Overlap:** 7.35% of train rows are exact feature duplicates, with 3.3% having conflicting targets. 7.3% of test rows match a train row exactly.
+
+---
+
+## 🚀 Execution Guide
 
 ```bash
-# 1. Parse schema and group features
+# Step 1: Parse dataset schema and group columns
 python dataset_exploration/01_explore_schema.py
 
-# 2. Convert Bengali boolean text flags to compact numeric format
+# Step 2: Convert raw Bengali boolean flags to compact numeric CSVs (910 MB -> 63 MB)
 python dataset_exploration/02_convert_to_numeric.py
 
-# 3. Profile dataset statistics and target correlations
+# Step 3: Run numerical profiling and sentinel detection
 python dataset_exploration/03_profile_and_ghost_hunt.py
 
-# 4. Search sentinels & inspect boolean pairs
+# Step 4: Validate ghost values and analyze boolean flag pair correlations
 python dataset_exploration/04_ghost_value_and_bool_pairs.py
 ```

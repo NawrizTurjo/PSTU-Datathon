@@ -1,0 +1,86 @@
+=== Adversarial validation: classifier predicting is_test ===
+5-fold CV ROC-AUC (train vs test discrimination): 0.4985 +/- 0.0042
+Interpretation: ~0.50 = train/test indistinguishable (safe, iid split).
+  Notably >0.5 (e.g. >0.55-0.60) = real covariate shift exists; CV may
+  overstate leaderboard performance, consider adversarial-weighting or
+  dropping the most shift-driving features.
+
+Top 20 features driving train/test separability (importance in is_test classifier):
+base_distance_from_coastal_river_km         0.022468
+base_station_installation_age_years         0.021298
+sensor_current_groundwater_level_meters     0.020037
+num_var45_hace2                             0.016873
+cost_effective_parts_3m_bdt                 0.016173
+sensor_current_battery_voltage_volts        0.015734
+num_var45_ult3                              0.015355
+num_med_var45_ult3                          0.014731
+cost_effective_maintenance_3m_bdt           0.014328
+sensor_avg_water_tank_2_months_ago          0.014309
+cost_grid_connection_fee_bdt                0.014163
+sensor_avg_water_tank_3_months_ago          0.013905
+num_var45_ult1                              0.013851
+sensor_avg_humidity_2_months_ago            0.013641
+sensor_avg_water_tank_last_3_months         0.012998
+sensor_current_water_tank_storage_liters    0.012954
+sensor_avg_temp_3_months_ago                0.012626
+sensor_grid_voltage_fluctuation_index       0.012260
+sensor_inverter_temperature_celsius         0.011744
+sensor_avg_water_tank_last_month            0.011520
+
+=== Out-of-range features: test values outside train's [min,max] ===
+column                                          train_min     train_max  n_below  n_above    test_min      test_max
+sensor_avg_temp_last_month                          0.000        64.629        0        2       1.151       100.000
+sensor_avg_humidity_3_months_ago                    0.000         3.238        0        2       0.000       100.000
+cost_total_energy_consumed_bdt                      0.000      9577.778        0        1       0.000     10000.000
+count_water_tanks_connected                         0.000        30.000        0        1       0.000        50.000
+num_var8_0                                          0.000         3.000        0        1       0.000         6.000
+sensor_current_grid_power_status                    0.000         1.200        0        1       0.000       100.000
+sensor_ambient_temperature_celsius              -2994.930    240045.000        1        0   -4942.260    227354.910
+sensor_coastal_humidity_percentage                  0.000    525742.200        0        1       0.000   6119500.140
+sensor_battery_charge_percentage                    0.000    444004.950        0        1       0.000    455858.160
+sensor_current_groundwater_level_meters             0.056       100.000        1        0       0.000        40.436
+sensor_panel_surface_temperature_celsius            0.000    740006.610        0        1       0.000   6119500.140
+sensor_current_battery_voltage_volts                0.065       100.000        1        0       0.000        46.475
+trend_depreciation_rate_1y3                       -50.000       -50.000        0        1     -50.000        50.000
+trend_repair_cost_increase_1y3                    -50.000        50.000        1        0     -50.000        50.000
+trend_repair_claim_count_1y3                      -50.000        50.000        1        0     -50.000        50.000
+cost_depreciation_value_bdt                         0.000         0.000        0        1       0.000     10000.000
+cost_govt_grant_3m_bdt                              0.000       419.153        0        1       0.000     10000.000
+cost_energy_sold_to_grid_bdt                        0.000      4330.004        0        1       0.000     10000.000
+cost_panel_replacement_bdt                          0.000      3714.851        0        1       0.000     10000.000
+cost_scrap_sale_bdt                                 0.000      4708.314        0        1       0.000     10000.000
+num_var7_recib_ult1                                 0.000        12.000        0        1       0.000        24.000
+num_med_var45_ult3                                  0.000       249.000        0        1       0.000       267.000
+num_var45_hace2                                     0.000       288.000        0        1       0.000       342.000
+num_var45_ult3                                      0.000       747.000        0        1       0.000       801.000
+sensor_avg_water_tank_3_months_ago                  0.000        62.268        0        1       0.000       100.000
+sensor_avg_temp_2_months_ago                        0.000        66.003        0        1       0.124       100.000
+sensor_avg_temp_3_months_ago                        0.000        65.735        0        1       0.000       100.000
+sensor_avg_temp_last_3_months                       0.000        84.286        0        1       1.028       100.000
+sensor_avg_humidity_2_months_ago                    0.000         6.326        0        1       0.000       100.000
+sensor_avg_humidity_last_month                      0.000        12.460        0        1       0.000       100.000
+
+Total numeric columns with out-of-range test values: 33 / 223
+
+=== Boolean flag positive-rate shift (train vs test) ===
+column                                         train_rate   test_rate  abs_diff
+has_primary_solar_inverter                         0.6618      0.6563    0.0054
+has_constant_maintenance_log                       0.0936      0.0887    0.0049
+has_constant_charge_controller_issue               0.0737      0.0688    0.0049
+has_constant_power_failure_log                     0.0982      0.0936    0.0046
+is_pump_motor_overheating                          0.7305      0.7259    0.0046
+has_no_recent_maintenance_log                      0.9181      0.9222    0.0041
+has_solar_charge_controller                        0.0664      0.0626    0.0038
+lacks_solar_charge_controller                      0.9336      0.9374    0.0038
+has_no_recent_power_failure_log                    0.9132      0.9168    0.0036
+has_no_recent_alert_emission                       0.9331      0.9359    0.0028
+lacks_auto_voltage_regulator                       0.9961      0.9943    0.0017
+is_pump_draw_dry                                   0.0039      0.0025    0.0014
+has_dust_accumulation_on_panels                    0.0039      0.0025    0.0014
+has_active_grid_connection                         0.0039      0.0026    0.0013
+lacks_remote_monitoring_system                     0.9963      0.9976    0.0012
+has_auto_voltage_regulator                         0.0034      0.0047    0.0012
+has_no_recent_alert_received                       0.8700      0.8712    0.0012
+lacks_solar_panel_cleaning_schedule                0.9984      0.9973    0.0011
+is_local_technician_unavailable                    0.9983      0.9972    0.0011
+has_active_maintenance_schedule                    0.0505      0.0515    0.0011

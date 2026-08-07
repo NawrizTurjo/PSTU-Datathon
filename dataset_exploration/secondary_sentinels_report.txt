@@ -1,0 +1,88 @@
+=== Secondary sentinel scan (exact match on common missing-value codes) ===
+Candidates checked: [-1, 99, 999, 9999, 99999, 999999, 9999999999, -99, -999, -9999, -99999, -999999]
+
+value 99:
+    num_var45_ult3: 60 rows (0.125%)
+    num_op_var41_ult3: 35 rows (0.073%)
+    num_op_var39_ult3: 35 rows (0.073%)
+    num_var45_hace2: 25 rows (0.052%)
+    num_op_var41_comer_ult3: 24 rows (0.050%)
+    num_op_var39_comer_ult3: 22 rows (0.046%)
+    num_med_var45_ult3: 15 rows (0.031%)
+    num_var45_ult1: 15 rows (0.031%)
+    num_op_var41_ult1: 7 rows (0.015%)
+    num_op_var39_ult1: 7 rows (0.015%)
+    num_op_var39_comer_ult1: 7 rows (0.015%)
+    num_var45_hace3: 7 rows (0.015%)
+    num_op_var41_comer_ult1: 6 rows (0.012%)
+    num_op_var41_hace2: 4 rows (0.008%)
+    num_op_var39_hace2: 4 rows (0.008%)
+    base_station_installation_age_years: 2 rows (0.004%)
+    cost_total_energy_consumed_bdt: 1 rows (0.002%)
+    sensor_water_salinity_ppm: 1 rows (0.002%)
+    sensor_rainfall_mm: 1 rows (0.002%)
+    sensor_grid_voltage_fluctuation_index: 1 rows (0.002%)
+    num_op_var41_efect_ult3: 1 rows (0.002%)
+    num_op_var39_efect_ult3: 1 rows (0.002%)
+value -999999:
+    base_number_of_dependent_farmers: 66 rows (0.137%)
+
+=== Zero-inflation ratio per numeric column ===
+Columns with >=90% zeros: 143 / 223
+Columns with >=99% zeros: 87 / 223
+Full ranked list saved to zero_inflation_ratios.csv
+
+20 sparsest columns:
+                            column  zero_ratio
+       cost_depreciation_value_bdt    1.000000
+  sensor_groundwater_arsenic_level    0.999979
+    sensor_dust_accumulation_index    0.999958
+             num_venta_var44_hace3    0.999958
+         cost_fund_transfer_in_bdt    0.999938
+           num_trasp_var33_in_ult1    0.999938
+   count_months_since_arsenic_test    0.999917
+                        num_var6_0    0.999875
+  sensor_avg_humidity_3_months_ago    0.999875
+            cost_govt_grant_3m_bdt    0.999834
+             num_aport_var17_hace3    0.999834
+     cost_reimbursement_repair_bdt    0.999771
+              num_reemb_var17_ult1    0.999771
+           cost_ngo_funding_3m_bdt    0.999751
+             num_aport_var33_hace3    0.999751
+ sensor_avg_vibration_3_months_ago    0.999730
+     cost_panel_replacement_3m_bdt    0.999668
+            num_compra_var44_hace3    0.999668
+sensor_avg_irradiance_3_months_ago    0.999668
+         cost_effective_repair_bdt    0.999522
+
+20 least sparse (most populated) numeric columns:
+                                column  zero_ratio
+            trend_govt_fund_growth_1y3         0.0
+             trend_ngo_fund_growth_1y3         0.0
+   trend_replacement_cost_increase_1y3         0.0
+   trend_maintenance_cost_increase_1y3         0.0
+        trend_repair_cost_increase_1y3         0.0
+      trend_incoming_fund_increase_1y3         0.0
+   trend_outgoing_expense_increase_1y3         0.0
+        trend_internal_transfer_in_1y3         0.0
+       trend_internal_transfer_out_1y3         0.0
+          trend_scrap_value_change_1y3         0.0
+trend_community_contribution_count_1y3         0.0
+            trend_govt_grant_count_1y3         0.0
+           trend_ngo_funding_count_1y3         0.0
+     trend_panel_replacement_count_1y3         0.0
+     trend_maintenance_claim_count_1y3         0.0
+          trend_repair_claim_count_1y3         0.0
+   trend_expense_transaction_count_1y3         0.0
+           trend_internal_in_count_1y3         0.0
+            trend_scrap_sale_count_1y3         0.0
+   base_distance_from_coastal_river_km         0.0
+
+=== Recommendation ===
+Most operational_count/financial/sensor columns are extremely zero-inflated
+(this mirrors the original Santander data's sparsity). For tree models this is
+largely free (native sparse-aware splitting). For linear/distance-based models,
+consider: (a) a binary 'is_nonzero' indicator per sparse column in addition to
+the raw value, (b) log1p-transform on the nonzero-heavy-tailed ones flagged in
+script 04, (c) dropping near-constant (>99.5% zero) columns if they add no signal
+after checking correlation with target.

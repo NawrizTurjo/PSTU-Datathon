@@ -1,5 +1,16 @@
 # Dataset Exploration — findings & plan
 
+> ## ⛔ FINDINGS INVALIDATED — DATASET WITHDRAWN (2026-08-08)
+>
+> The organizers announced the released dataset **contained leaks** and will re-upload it.
+> **Everything below describes the withdrawn data.**
+>
+> The 10 scripts are generic — they *detect* schema, sentinels, constants and duplicates
+> rather than hardcoding them — so re-run them as-is on the new data and read the
+> regenerated reports fresh. Do not carry any figure below forward.
+>
+> See [`../CLAUDE.md`](../CLAUDE.md) for what survives.
+
 Original `dataset/train.csv` is **910 MB** for only 48,128 rows (`dataset/test.csv` is
 227 MB / 12,032 rows). Not row count that's huge — it's column bloat: ~63 of the
 286 feature columns are **boolean flags encoded as full Bengali sentences**

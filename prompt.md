@@ -1,5 +1,14 @@
 # 🚀 Master AI Architect Prompt: Predictive Maintenance Ideathon & System Architecture
 
+> ## ⛔ DO NOT USE AS-IS — CONTAINS STALE FIGURES (2026-08-08)
+>
+> The organizers withdrew the dataset (it **contained leaks**) and will re-upload it.
+> This prompt is pre-loaded with measured findings from the **withdrawn** data — feeding it
+> to a model now would ground the output in figures that are no longer true.
+>
+> Before reusing: re-run `dataset_exploration/01`–`10` on the new dataset and replace every
+> number in the "Already confirmed via EDA" block below. See [`CLAUDE.md`](CLAUDE.md).
+
 > **Instructions for Use:**  
 > Copy and paste the prompt block below directly into your AI Agent (e.g. Claude 3.5 Sonnet, Gemini 1.5 Pro, GPT-4o, or DeepSeek-R1) to generate a comprehensive, multi-directional solution architecture and strategic blueprint for the PSTU Datathon competition.
 

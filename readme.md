@@ -4,7 +4,20 @@
 
 Build a high-performance machine learning solution to predict critical 7-day failures in off-grid, solar-powered water management stations across remote riverine and coastal char (island) regions of Bangladesh. Protecting vulnerable agricultural lands and drinking water sources from tidal saline intrusion.
 
-**Current status:** EDA complete (10 scripts, all findings measured). Solution roadmap written and prioritized in [`ideas/`](ideas/README.md). Modelling not yet started.
+> ## ⛔ DATASET WITHDRAWN — FINDINGS PENDING RE-VERIFICATION
+>
+> The organizers announced (2026-08-08) that the released dataset **contained leaks** and
+> that the **entire dataset will be re-uploaded**.
+>
+> **Every measured number below was derived from the withdrawn dataset.** The scripts and
+> the notebook pipeline still apply; the specific figures do not. Re-run
+> `dataset_exploration/01`–`10` against the new data before trusting anything here.
+>
+> See [`CLAUDE.md`](CLAUDE.md) for exactly what survives and what must be re-derived.
+
+**Current status:** EDA pipeline, solution roadmap ([`ideas/`](ideas/README.md)) and a runnable Kaggle notebook ([`solution/`](solution/)) are all built and smoke-tested — against the withdrawn dataset. Nothing submitted to the leaderboard. Work paused pending re-upload.
+
+> 🚀 **Running it (after the re-upload):** upload [`solution/pstu_kaggle_solution.ipynb`](solution/pstu_kaggle_solution.ipynb) to Kaggle with the dataset attached and run all cells. CPU only, ~15–30 min, writes `submission.csv`. **First fix the hardcoded `CONSTANT_COLS` / `DUPLICATE_COLS` lists** — they are specific to the old data (see `CLAUDE.md` → Landmines).
 
 ---
 
@@ -43,6 +56,7 @@ unzip pstu-data-craft-transforming-raw-data-into-impact.zip -d dataset/
 
 ```text
 PSTU-Datathon/
+├── CLAUDE.md                            # Project memory: measured findings, conventions, dead ends
 ├── overview.md                          # Problem domain, background context & scoring rules
 ├── dataset_description.md               # Schema specification, feature groups & submission format
 ├── missing-exploration.md               # Gap-analysis checklist that drove scripts 05–10 (now addressed)
@@ -63,17 +77,20 @@ PSTU-Datathon/
 │   ├── converted_test.csv               # [generated] 16 MB decoded test
 │   └── (16 report / CSV outputs)        # schema, profile, ghost-value, adversarial, sparsity,
 │                                        #   duplicate-row & threshold-sweep reports
-└── ideas/                               # Measured solution roadmap & strategy index
-    ├── README.md                        # Priority index & benchmark baseline table
-    ├── 00-foundation/                   # Data hygiene, StratifiedKFold CV & metric decomposition
-    │   ├── README.md                    # Foundation protocol & submission traps
-    │   └── metric-decomposition.md      # What the composite score actually rewards
-    ├── 01-gbdt-core/                    # LightGBM / CatBoost / XGBoost core architectures
-    ├── 02-feature-engineering/          # Santander row-stats, domain physics & ratio features
-    ├── 03-threshold-engine/             # Composite threshold search (+0.018 measured gain)
-    ├── 04-ensemble-diversity/           # Rank-averaging, GBDT blending & neural tabular assessment
-    ├── 05-label-noise/                  # Strategies for the 3.3% conflicting-label rows
-    └── 06-dead-ends/                    # Measured non-working ideas & time-saving traps
+├── ideas/                               # Measured solution roadmap & strategy index
+│   ├── README.md                        # Priority index & benchmark baseline table
+│   ├── 00-foundation/                   # Data hygiene, StratifiedKFold CV & metric decomposition
+│   │   ├── README.md                    # Foundation protocol & submission traps
+│   │   └── metric-decomposition.md      # What the composite score actually rewards
+│   ├── 01-gbdt-core/                    # LightGBM / CatBoost / XGBoost core architectures
+│   ├── 02-feature-engineering/          # Santander row-stats, domain physics & ratio features
+│   ├── 03-threshold-engine/             # Composite threshold search (+0.018 measured gain)
+│   ├── 04-ensemble-diversity/           # Rank-averaging, GBDT blending & neural tabular assessment
+│   ├── 05-label-noise/                  # Strategies for the 3.3% conflicting-label rows
+│   └── 06-dead-ends/                    # Measured non-working ideas & time-saving traps
+└── solution/                            # Runnable Kaggle deliverable
+    ├── pstu_kaggle_solution.ipynb       # Upload this to Kaggle and run all cells
+    └── pstu_kaggle_solution.py          # Same source, `# %%` cell-marked (for diffing/editing)
 ```
 
 > **Note:** `converted_train.csv` / `converted_test.csv` are generated artifacts (79 MB combined)
@@ -94,6 +111,8 @@ PSTU-Datathon/
 | 📁 [`ideas/`](ideas/README.md) | Priority-ordered solution roadmap (00 Foundation → 03 Threshold Engine → 01 GBDT Core → 02 Feature Eng → 04 Ensembles → 05 Label Noise → 06 Dead Ends). |
 | 📄 [`ideas/00-foundation/metric-decomposition.md`](ideas/00-foundation/metric-decomposition.md) | **Highest-value document in the repo.** Algebraic decomposition of the composite metric and what it rewards. |
 | 📄 [`ideas/06-dead-ends/`](ideas/06-dead-ends/README.md) | Six tested-and-rejected approaches with the numbers that killed them. 10-minute read, saves hours. |
+| 📁 [`solution/`](solution/pstu_kaggle_solution.ipynb) | **The runnable deliverable.** End-to-end Kaggle notebook: streaming Bengali decode → preprocessing → feature engineering → LightGBM/XGBoost/CatBoost → rank-blend → cut-point optimization → validated submission. |
+| 📄 [`CLAUDE.md`](CLAUDE.md) | Project memory: every measured finding, settled conventions, and the dead-end list, so a new session resumes without re-deriving anything. |
 
 ---
 

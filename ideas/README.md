@@ -1,7 +1,22 @@
 # Solution Ideas — index & priority
 
-Every number below is **measured** on this dataset (5-fold OOF on `converted_train.csv`),
-not estimated. Where something is a guess, it says so.
+> ## ⛔ NUMBERS INVALIDATED — DATASET WITHDRAWN (2026-08-08)
+>
+> The organizers announced the released dataset **contained leaks** and will re-upload it.
+> Every figure in this folder was measured on the withdrawn data.
+>
+> - **The method still applies** — priority order, the metric decomposition, the cut-point
+>   engine, the feature-engineering blocks, the CV protocol.
+> - **The numbers do not** — baselines, gains, the class balance, and the droppable-column
+>   lists all need re-measuring.
+> - **[`06-dead-ends/`](06-dead-ends/) should be rebuilt from scratch**, not trusted. Those
+>   approaches were rejected based on leaky data; the train→test overlap finding in
+>   particular is likely to behave completely differently now.
+>
+> See [`../CLAUDE.md`](../CLAUDE.md) for the full survives/invalidated breakdown.
+
+Every number below was **measured** on the (now withdrawn) dataset (5-fold OOF on
+`converted_train.csv`), not estimated. Where something is a guess, it says so.
 
 ## The competitive landscape (measured)
 

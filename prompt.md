@@ -1,119 +1,254 @@
-# 🚀 Master AI Architect Prompt: Predictive Maintenance Ideathon & System Architecture
+# Master idea-generation prompt — PSTU Data Thon 2026 Vol-1
 
-> ## ⛔ DO NOT USE AS-IS — CONTAINS STALE FIGURES (2026-08-08)
->
-> The organizers withdrew the dataset (it **contained leaks**) and will re-upload it.
-> This prompt is pre-loaded with measured findings from the **withdrawn** data — feeding it
-> to a model now would ground the output in figures that are no longer true.
->
-> Before reusing: re-run `dataset_exploration/01`–`10` on the new dataset and replace every
-> number in the "Already confirmed via EDA" block below. See [`CLAUDE.md`](CLAUDE.md).
+You are generating a prioritized roadmap of modeling ideas for a Kaggle-style competition. This
+prompt is self-contained: everything you need is below. Do not assume access to any other files
+or conversation history. Where this prompt states a fact as **measured**, treat it as ground
+truth — it was produced by running code against the actual data, not estimated. Where it states
+something as a **confirmed negative**, do not propose it — it was tried/checked and does not
+apply here. Proposing a measured negative wastes review time; build on top of these findings
+instead of re-deriving or contradicting them.
 
-> **Instructions for Use:**  
-> Copy and paste the prompt block below directly into your AI Agent (e.g. Claude 3.5 Sonnet, Gemini 1.5 Pro, GPT-4o, or DeepSeek-R1) to generate a comprehensive, multi-directional solution architecture and strategic blueprint for the PSTU Datathon competition.
+## What you're building
 
-***
+One folder per idea under `ideas/`, plus a priority-ordered `ideas/README.md` index. Each idea
+folder must contain, in its own `README.md`:
 
-```markdown
-# SYSTEM PROMPT: GRANDMASTER MACHINE LEARNING ARCHITECT & IOT PREDICTIVE MAINTENANCE EXPERT
+- **What it is** — one paragraph, concrete enough to implement without further clarification.
+- **Why it should work** — cite the specific measured finding below that motivates it. "Because
+  it's a common Kaggle trick" is not sufficient justification on its own.
+- **Concrete steps** — an implementation-ready outline, not just a description.
+- **Kaggle cost** — rough compute/time budget (CPU-only tree models are cheap; anything needing
+  GPU-hours or long training should say so explicitly and justify it against the ~30h/week GPU
+  cap).
+- **Honest expected gain** — a number or range against the baseline below, with your confidence
+  in that estimate. Inflated expectations are worse than modest honest ones — this roadmap will
+  be used to allocate a handful of days of work before a hard deadline.
+- **When to abandon** — a concrete stopping condition (e.g. "if OOF AUC doesn't improve by
+  >0.002 after step 3, drop this").
 
-## CONTEXT & ROLE
-You are an elite Kaggle Grandmaster, Principal AI Systems Architect, and Domain Specialist in IoT Sensor Networks, Imbalanced Classification, and Environmental Risk Engineering. 
+Also produce `ideas/dead-ends/` — a folder for ideas you considered and are explicitly *not*
+recommending, with a one-paragraph note on why, so nobody re-investigates them later.
 
-You are tasked with designing a winning end-to-end Solution System Architecture and Ideathon Blueprint for a high-stakes Data Science competition: **Predictive Maintenance for Coastal Riverine Water Management Stations in Bangladesh**.
-
----
-
-## 📌 PROBLEM OVERVIEW & CHALLENGE CONTEXT
-- **Goal:** Predict critical failure in off-grid, solar-powered water management stations within a 7-day window.
-- **Environment:** Remote riverine/coastal char regions (saline intrusion, extreme humidity, solar dust, cyclonic stress, boat-only maintenance access).
-- **Data Characteristics:** 
-  - 48,128 train rows, 12,032 test rows, 286 features + 1 target (`Your_Target_Column`, train only).
-  - Target Imbalance: 5.0% positive failure rate (45,722 Normal vs 2,406 Failure).
-  - Obfuscated Santander numeric skeleton (`num_var*`, `num_op_var*`), decoded Bengali boolean flags (63 cols, originally full Bengali yes/no sentences), IoT sensor readings, operational counts, and financial logs.
-  - Hidden missing value sentinel: `-999999` in `base_number_of_dependent_farmers` (0.14% train / 0.19% test rows) + extreme round-number heavy tails in sensor runtime/wind columns (separate phenomenon, not the same sentinel).
-  - **Already confirmed via EDA (treat as ground truth, don't re-derive):**
-    - 12 columns are droppable with zero information loss: 6 constant (same value every row in train AND test), 6 exact-duplicates of another column.
-    - **Adversarial validation: train vs test is iid** (5-fold train-vs-test classifier ROC-AUC = 0.4985, chance level). No meaningful covariate shift.
-    - **No recoverable station id.** Grouping by `base_*` attributes looks tempting (19% of rows collide into groups) but it's a false signal — one dominant fill value in `base_distance_from_coastal_river_km` (0.509..., 19.5% of rows) plus a 5-value `base_solar_panel_tilt_angle_degrees` column cause coincidental collisions. Within-group target rates scatter near the global 5% rate (std 0.113) instead of clustering per station. **GroupKFold is not justified by this data — use StratifiedKFold.**
-    - 64% of numeric columns are ≥90% zero-inflated (mirrors the original Santander sparsity).
-    - **Real label noise:** 7.35% of train rows (3,539) are exact feature-duplicates of another row; 105 of those duplicate groups (3.3% of all train rows) have **conflicting target labels** — identical features, different outcome. This caps achievable **precision/F1 but NOT AUC** (oracle AUC using per-group means is 0.9993).
-    - **Train-test row overlap is a MEASURED DEAD END.** ~7% of test rows (841) exactly match a train row, but the model beats the lookup on precisely those rows (AUC 0.8295 vs 0.7210) and every blend weight lowers the composite (full override: −0.026). Do not propose lookup/override/blend strategies for this. The matched rows collide because they are the sparse "nothing happened" default profile, not because they are the same station.
-    - **Metric decomposition (verified):** substituting BalancedAccuracy = (R+S)/2 collapses the formula exactly to `0.30·F1 + 0.25·AUC + 0.15·Precision + 0.20·Recall + 0.10·Specificity`. Recall carries more effective weight than precision. Degenerate floors: all-zeros = 0.3028, **all-ones = 0.4388** (any model must beat this). Measured baselines: RandomForest 0.5167 (best threshold 0.60), HistGradientBoosting 0.5269 (best threshold 0.53, OOF AUC 0.8189). At the optimum precision is only 0.183 — **precision is the binding constraint**, relaxable only by better ranking.
-    - Baseline RandomForest (5-fold OOF, no cleanup applied): ROC-AUC 0.811. Threshold tuning against the real composite formula found optimum ≈0.60 vs naive 0.5, worth +0.018 composite score on this unpolished baseline alone.
-- **Evaluation Metric (Custom Composite Score):**
-  $$\text{FinalScore} = (0.30 \times F1) + (0.25 \times ROCAUC) + (0.15 \times Precision) + (0.15 \times Recall) + (0.10 \times BalancedAccuracy) + (0.05 \times Specificity)$$
-- **Submission Requirements:** 3 columns: `id`, `Target_Binary` (0/1), `Target_Probability` (float between 0.0 and 1.0).
+Prioritize by (expected gain / implementation cost), not by novelty. This is a ~4-day sprint
+before a hard submission deadline, not a research project.
 
 ---
 
-## 🎯 YOUR MISSION & OUTPUT DELIVERABLES
-Generate a phenomenal, ultra-robust, multi-directional Solution Architecture and Ideathon Proposal (Conceptual & Architectural level — NO raw code implementation needed, focus on system design, mathematical strategies, and methodology).
+## Competition
 
-Organize your response into the following 7 core sections:
+**PSTU Data Thon 2026 Vol-1.** Predict whether a financial account will be flagged at-risk
+(`TARGET = 1`). Binary classification, 350 anonymized features. Timeline (GMT+6): final
+submission 13 Aug 2026 18:00, private LB 18:30, inference notebook due 23:59, winners 15 Aug.
+**Today is 2026-08-09** — roughly 4 days remain.
+
+**Scoring is only 50% leaderboard:**
+
+| Component | Weight | Notes |
+|---|---|---|
+| Public LB | 10% | live, on 10% of test data — small, do not overfit to it |
+| Private LB | 40% | on 50% of test data |
+| Hidden test | 40% | 40% of *completely unseen* data, run via a mandatory inference notebook |
+| Presentation + code + format | 10% | |
+
+**Implication for idea ranking:** generalization and a deterministic, reproducible inference
+notebook matter as much as raw leaderboard score. A notebook that fails to run, or is
+non-deterministic, forfeits 40% outright. Weight ideas that improve robustness/generalization
+at least as highly as ideas that only chase public-LB score — the public LB is only 10% and is
+explicitly flagged as too small to trust for model selection.
+
+## The metric — still partially unresolved
+
+The competition page contradicts itself: the evaluation section says "F1 Score", the submission
+section says predictions are thresholded at 0.5 and scored as "**Macro F1**". These diverge
+sharply at this dataset's ~3.96% positive rate:
+
+| Submission | Binary F1 | Macro F1 |
+|---|---|---|
+| all zeros | 0.0000 | 0.4899 |
+| all ones | 0.0761 | 0.0381 |
+
+**An all-zeros diagnostic-probe submission may or may not have been made by the time you read
+this** — do not assume the ambiguity is resolved. Propose ideas that are robust to *either*
+metric where possible (i.e. tune the decision threshold against both binary-F1 and macro-F1 and
+report both), and flag clearly if an idea's value depends on which metric turns out to be live.
+
+Because scoring is F1-only (no AUC term in the grade), **only the binary decision the model
+outputs matters** — ranking quality (AUC) matters solely through the split it produces at the
+chosen threshold. Prioritize threshold-selection/calibration ideas accordingly; they are cheap
+and were measured to be worth **+0.21 binary-F1 / +0.10 macro-F1** over a naive 0.5 cut on the
+baseline model (see below). The grader applies a fixed 0.5 cut to whatever is *submitted*, so
+the practical mechanism is: submit hard 0/1 labels at your chosen operating point, or rank-shift
+probabilities so 0.5 lands exactly there.
+
+## Data shape (measured, exact)
+
+- `train.csv`: 76,020 rows × 351 cols (350 `feat_*` + `TARGET`).
+- `test.csv`: 60,654 rows × 351 cols (350 `feat_*` + `id` as the **last** column). `id` is not
+  `0..n-1` and not contiguous.
+- Zero missing values in either file.
+- Positive rate: 3.9569% (3,008 / 76,020) — a hard class-imbalance problem.
+- Dtypes: 212 int64, 132 float64, **6 object (categorical string)** columns among the 350
+  `feat_*` columns (344 are numeric).
+
+### The 6 categorical columns (measured cardinality + train/test overlap)
+
+| Column | Train levels | Prefix | Test-only levels | % test rows with unseen level |
+|---|---|---|---|---|
+| `feat_142` | 2,333 | `PRD_*` | 55 | 0.1467% |
+| `feat_325` | 1,710 | `SEG_*` | 27 | 0.0775% |
+| `feat_157` | 627 | `PRV_*` | 8 | 0.0181% |
+| `feat_320` | 119 | `CH_*` | 0 | 0.0000% |
+| `feat_337` | 39 | `OFC_*` | 0 | 0.0000% |
+| `feat_318` | 12 | `PERF_*` | 0 | 0.0000% |
+
+Every value in every one of these 6 columns matches its expected prefix 100% of the time — the
+categories are structured/clean, not noisy free text. `feat_318` and `feat_337` are low enough
+cardinality to treat as ordinary categoricals; `feat_142`/`feat_325`/`feat_157` need
+high-cardinality handling (target encoding, hashing, or leave as raw codes for a tree model that
+handles categoricals natively). **Any encoding must have an explicit fallback for unseen levels
+at inference** (global mean / reserved bucket / `handle_unknown='ignore'`) — the hidden-test
+component runs on the mandatory inference notebook, so an unhandled unseen-category error there
+is a real risk, not a hypothetical.
+
+### Sentinels (measured)
+
+- `feat_109 == -999999` is a real sentinel: 116 train rows (~0.15%), 89 test rows (~0.15%). No
+  other numeric column carries this exact value. Treat as missing.
+- **`9999999999`** (1e10−1) is a second, separate sentinel spanning **23 columns**: `feat_11,
+  feat_21, feat_26, feat_30, feat_31, feat_36, feat_74, feat_77, feat_96, feat_124, feat_135,
+  feat_144, feat_149, feat_158, feat_171, feat_196, feat_204, feat_226, feat_301, feat_315,
+  feat_330, feat_336, feat_340`. Treat as missing alongside `feat_109`.
+- **Confirmed negative:** `feat_169`'s extreme minimum (~-1.11e8) is *not* a sentinel. It is a
+  genuine heavy-tailed continuum of large-magnitude values with no repeated constant at the
+  extreme. Do not special-case it as missing; ordinary robust scaling is sufficient.
+
+### Sparsity
+
+252 of the 344 numeric columns are ≥90% zero. This is a heavily sparse, zero-inflated tabular
+dataset, structurally similar to the public Santander Customer Satisfaction dataset (see
+Lineage note below) — row-wise aggregate features (count of nonzero, sum, mean-of-nonzero,
+etc. across feature blocks) are a known-effective pattern for this data shape.
+
+### Redundant columns (measured — corrects an earlier, wrong estimate)
+
+- 28 columns are constant (single unique value) in *both* train and test — safe to drop.
+- 14 more are constant in test only (they vary in train) — **keep** these, a model can still
+  learn from their train-time variance even though test predictions won't use that signal.
+- 16 columns are *exact*, row-for-row duplicates of another column (16 groups, all size 2) —
+  safe to drop the redundant half of each pair.
+- **Combined safe-drop list: 44 columns.** An earlier estimate of "83 droppable, 55 redundant
+  across 20 groups" does **not** reproduce under exact-value duplicate checking and should be
+  treated as wrong. A looser check (Pearson `|corr| > 0.999`, i.e. scaled/linear near-copies
+  rather than byte-identical values) finds 36 groups / 49 redundant columns (77 combined) —
+  closer but still not exactly 83, and threshold-dependent. **Confirmed negative: do not budget
+  time re-deriving the 83 figure — it was not reproducible.** If you want a
+  dimensionality-reduction idea, propose it against the 36 corr-based groups explicitly as
+  "candidates for reduction, not guaranteed-safe drops," since a scaled copy can still carry
+  distinct information a tree model exploits.
+
+### Train/test distribution shift (measured)
+
+5-fold adversarial-validation AUC (classifier predicting train-vs-test) = **0.5742 ± 0.0027**.
+This is a real, moderate covariate shift — not the ~0.50 you'd see on a clean iid split.
+`feat_182` alone drives the most separability (importance ~0.17 in the adversarial classifier,
+~2.4x the next-highest feature `feat_44`). 93 of 344 numeric columns have test values outside
+their train min/max range, with `feat_116`, `feat_44`, `feat_334` the worst offenders (also
+top adversarial-importance features). **Implication:** CV may optimistically overstate LB
+performance; ideas that address this (adversarial-validation sample weighting, robustifying or
+clipping the worst-shifted features, monitoring CV-vs-LB gap) are worth proposing given the
+scoring structure's heavy weight on private/hidden test (80% combined) over public LB (10%).
+
+### Duplicate rows / label conflicts (measured, confirmed negative)
+
+Zero duplicate feature-rows in train, zero in test, zero rows shared between train and test on
+features alone. **Confirmed negative: there is no duplicate-row label-noise cleanup to do** —
+unlike some public tabular datasets, this one has none. Do not propose deduplication ideas.
+
+### Leak diagnostics (measured, confirmed negative — no leak)
+
+- Row-index AUC (does raw row order predict the target?): 0.5047 — no leak. Positive rate is
+  flat (~3.4%–4.5%) across 10 equal row-index blocks.
+- Best single-feature AUC across all 344 numeric columns: 0.6986 (`feat_175`). A "magic feature"
+  leak would show >0.85–0.90 alone; this is far below that. **Confirmed negative: no single
+  feature comes close to solving this on its own.**
+- Capacity test: an unregularized `DecisionTreeClassifier` reaches train AUC 1.0000 (expected —
+  full memorization) but held-out AUC only 0.5916 — a 0.41 gap. **Confirmed negative: there is
+  no deterministic rule to be found; the score has a genuine generalization ceiling.** Do not
+  propose "find the hidden formula" style approaches — they were checked for and ruled out.
+
+### Lineage — informational only, do NOT source external data
+
+The row count, exact positive count (3,008/76,020), and `-999999` sentinel match the public
+Santander Customer Satisfaction Kaggle dataset's fingerprint, and this dataset structurally
+resembles it (extreme sparsity, sentinel values, row-aggregate features likely to help).
+**This is recorded only to justify structural modeling choices** (e.g. row-aggregate features,
+sparse-data handling). **External datasets are explicitly prohibited by the competition rules
+and joining any external labels is instant disqualification.** Santander's true test labels were
+never public in the first place, so there is nothing to leak even if this were attempted — but
+the point is moot because it's against the rules regardless. Do not propose anything that uses
+external data, pretrained embeddings without disclosure, or any join against public Santander
+data or IDs.
+
+### Honest baseline (measured — beat this, don't just match it)
+
+`HistGradientBoostingClassifier` (sklearn's GBDT, used only because real LightGBM/XGBoost/
+CatBoost aren't installed in the local dev environment — the actual solution should use one of
+those on Kaggle), 5-fold stratified OOF, trained on the 306 remaining columns after dropping the
+44 safe-drop columns, sentinels replaced with NaN, categoricals ordinal-encoded on train only,
+**no hyperparameter tuning, no feature engineering beyond the cleanup above**:
+
+- Per-fold AUC: [0.8797, 0.8812, 0.8931, 0.8857, 0.8945], mean **0.8869 ± 0.0060**
+- OOF AUC (pooled): **0.8868**
+- At the F1-optimal threshold (t≈0.19): binary-F1 **0.3841**, macro-F1 **0.6786**
+- At naive t=0.5: binary-F1 0.1777, macro-F1 0.5791
+
+This is a floor established with zero feature engineering and a weaker-than-final GBDT library.
+Ideas should target beating OOF AUC ~0.887 / tuned macro-F1 ~0.68 with real GBDT libraries,
+proper hyperparameter search, categorical target-encoding, and row-aggregate features. Report
+expected gains relative to these numbers specifically.
 
 ---
 
-### SECTION 1: EXECUTIVE SUMMARY & SOLUTION VISION
-- High-level design philosophy for winning under severe class imbalance and synthetic Santander noise.
-- Core pillars of the solution architecture.
+## Rules that constrain every idea
+
+- ❌ No external datasets — only `train.csv`/`test.csv`/`sample_submission.csv`.
+- ❌ No test-set tampering or label reverse-engineering — instant disqualification.
+- ❌ Do not generate target values with an LLM — explicitly banned.
+- ✅ SMOTE / synthetic augmentation / feature engineering **on training data only** is allowed.
+- ⚠️ Pre-trained models are allowed only with disclosure in the writeup.
+- ✅ An inference notebook is mandatory and must reproduce submitted predictions
+  **deterministically** — every seed fixed, fold split pinned, model artifacts saved and
+  reloadable. Any idea that introduces non-determinism (unseeded randomness, non-reproducible
+  library behavior, wall-clock-dependent logic) must explicitly say how it stays deterministic.
+
+## Environment constraints
+
+- Local dev has pandas/numpy/scikit-learn/scipy only — no lightgbm/xgboost/catboost locally.
+  Ideas should be written assuming Kaggle's notebook environment (which has all three) but
+  should remain smoke-testable locally with `HistGradientBoostingClassifier` as a stand-in.
+- Don't propose GPU-dependent tree training — at this data size CPU is faster and Kaggle CPU
+  quota is unlimited while GPU is capped ~30h/week. GPU is only worth proposing for something
+  that genuinely needs it (e.g. a neural approach), and should say so explicitly with a cost
+  justification.
 
 ---
 
-### SECTION 2: END-TO-END SYSTEM ARCHITECTURE
-Design a modular, production-grade system pipeline covering:
-1. **Data Ingestion & Hygiene Layer:** Sentinel replacement (`-999999` → NaN), heavy-tail winsorization, zero-variance & duplicate column elimination (12 columns already confirmed droppable), and a duplicate-row / label-noise resolution policy for the 3.3% of train rows with conflicting labels.
-2. **Boolean-Pair Consolidation Module:** Net-flag feature generation (`has_X - lacks_X` $\in \{-1, 0, 1\}$) and complementarity compression.
-3. **Feature Engineering Factory:** Domain-specific physical interactions, Santander feature unmasking, ratio features, and anomaly density indices.
-4. **Model Zoo & Ensemble Pipeline:** Diversity matrix across tree-based, neural, and distance/density-based architectures.
-5. **Post-Processing & Custom Metric Threshold Engine:** Probability calibration and joint 6-metric optimization.
+## What to prioritize
 
----
+Given ~4 days remaining and the scoring split (80% combined private+hidden test, only 10%
+public LB, 10% presentation/code), rank ideas favoring:
 
-### SECTION 3: MULTI-DIRECTIONAL STRATEGIC IDEAS (COMPARE & DIVERSIFY)
-Provide **3 distinct strategic directions/paradigms**, detailing their strengths, risks, and implementation blueprints:
-
-- **Direction A: The GBDT Heavyweight & Feature Engineering Powerhouse**
-  - Advanced LightGBM + CatBoost + XGBoost ensemble focused on tabular feature interactions, target encoding, and focal loss / scale-pos-weight tuning.
-- **Direction B: The Unsupervised Profile-Clustering & Duplicate-Aware Robust Model**
-  - Note: EDA already confirmed `base_*` attributes do NOT recover a real station id (coincidental collisions on a dominant fill value, no within-group target purity) and train/test are iid (adversarial AUC 0.4985) — do **not** propose GroupKFold or frame this as station-entity recovery. Instead: (1) unsupervised soft-clustering (KMeans/GMM) across the full feature profile purely as an *engineered categorical feature* (cluster membership / distance-to-centroid), not as a CV-grouping key; (2) explicit handling of the confirmed label-noise duplicate-row groups (dedup strategy, soft-label averaging, or sample-weight downweighting for conflicting groups) — but **not** a train-test lookup/override, which was measured and rejected. CV throughout stays plain `StratifiedKFold`.
-- **Direction C: The Hybrid Anomaly-Detection & Tabular Neural Ensemble**
-  - Combining semi-supervised outlier detection (Isolation Forests, One-Class SVM) with TabNet / FT-Transformer neural representations blended with tree models for maximum diversity in ROC-AUC ranking.
-
----
-
-### SECTION 4: ADVANCED FEATURE ENGINEERING PLAYBOOK
-Detail specific domain and mathematical feature generation formulas across:
-- **Physical Stress & Degradation Indices:** e.g., Salinity-to-Corrosion ratios, Battery Voltage vs Solar Temperature stress index, Dust-to-Cleaning ratio.
-- **Operational Risk Multipliers:** Dry-run events per installation age, Surge count vs Inverter health flags.
-- **Financial Vulnerability Indicators:** Grant-to-Repair Cost ratios, Subsidy deficit flags.
-- **Santander De-anonymization Aggregations:** Row-wise zero counts, row-wise statistical moments (mean, std, min, max, skew) across `num_var*` groups.
-
----
-
-### SECTION 5: VALIDATION SCHEME & LEAK PREVENTION
-- Design the CV scheme around the confirmed findings: no real station-id grouping exists (plain `StratifiedKFold` is justified, not `GroupKFold`) and train/test are iid (adversarial AUC 0.4985, no covariate shift to correct for) — focus the design effort on fold stability under 5% imbalance and on the label-noise duplicate-row groups instead of re-deriving shift/grouping from scratch.
-- OOF (Out-Of-Fold) prediction generation protocols for stacking and threshold search.
-- Strategy for the confirmed duplicate-row label conflicts (3.3% of train rows): fold assignment, sample weighting, or soft-label treatment so these rows don't destabilize CV estimates.
-
----
-
-### SECTION 6: MATHEMATICAL POST-PROCESSING & COMPOSITE METRIC THRESHOLD OPTIMIZER
-Since 5 out of 6 composite sub-metrics ($F1$, $Precision$, $Recall$, $Specificity$, $BalancedAccuracy$) depend on the binary cutoff $t$:
-- Formulate the threshold search objective function over validation folds.
-- Probability calibration strategies (Isotonic Regression vs Platt Scaling vs Temperature Scaling).
-- Nelder-Mead / Bayesian optimization search for finding optimal cutoff $t^*$ that maximizes the exact competition weighted formula.
-
----
-
-### SECTION 7: RISK ASSESSMENT & FAILURE MODES
-- What can go wrong? (e.g., threshold overfitting, Santander noise memorization, class imbalance collapse, the confirmed conflicting-label duplicate rows silently inflating validation variance).
-- Concrete mitigation strategies for each identified failure mode.
-
----
-
-## 🎨 TONE & STYLE INSTRUCTIONS
-- **Deeply Technical & Professional:** Use precise terminology from Machine Learning, Reliability Engineering, and Data Architecture.
-- **Rich, Structured Formatting:** Use rich markdown formatting, clean diagrams/tables, mathematical LaTeX notation, and callout boxes.
-- **Actionable & Strategic:** Make every recommendation clear, logical, and competition-winning.
-```
+1. Cheap, high-confidence wins already implied by the measured findings above (the 44-column
+   cleanup, sentinel handling, threshold tuning, categorical unseen-level fallback) — these
+   should be baseline-solution requirements, not optional ideas, but call out any nuance.
+2. Feature engineering with concrete measured justification (row-aggregates for the 252
+   zero-inflated columns, target/frequency encoding for the 3 high-cardinality categoricals with
+   proper unseen-level handling).
+3. Model/ensemble choices appropriate for a ~4-day sprint (single well-tuned GBDT vs. a small
+   seed-averaged ensemble vs. blending multiple GBDT libraries) — weigh against the
+   generalization requirement, not just OOF score.
+4. Robustness ideas addressing the measured 0.5742 adversarial-validation shift, since the
+   hidden-test component (40%, completely unseen data) rewards generalization specifically.
+5. Do **not** spend idea slots on: deduplication (none exists), leak-hunting (none exists,
+   already exhaustively checked), external data, or re-deriving the 83-vs-44 droppable-column
+   discrepancy (already resolved — use 44).

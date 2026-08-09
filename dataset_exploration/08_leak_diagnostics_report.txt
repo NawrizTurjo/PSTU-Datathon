@@ -1,0 +1,48 @@
+=== (a) Row-index leak ===
+AUC of raw row-index predicting TARGET: 0.5047 (0.5 = no leak, direction-agnostic)
+Positive rate per 10 equal row-index blocks:
+  rows [     0:  7602): pos_rate=0.0405
+  rows [  7602: 15204): pos_rate=0.0397
+  rows [ 15204: 22806): pos_rate=0.0422
+  rows [ 22806: 30408): pos_rate=0.0385
+  rows [ 30408: 38010): pos_rate=0.0338
+  rows [ 38010: 45612): pos_rate=0.0371
+  rows [ 45612: 53214): pos_rate=0.0387
+  rows [ 53214: 60816): pos_rate=0.0383
+  rows [ 60816: 68418): pos_rate=0.0445
+  rows [ 68418: 76020): pos_rate=0.0424
+
+=== (b) Best single-feature AUC (numeric columns, direction-agnostic) ===
+Top 15 single-feature AUCs:
+  feat_175     AUC=0.6986
+  feat_119     AUC=0.6908
+  feat_182     AUC=0.6824
+  feat_228     AUC=0.6764
+  feat_132     AUC=0.6715
+  feat_110     AUC=0.6700
+  feat_164     AUC=0.6665
+  feat_69      AUC=0.6664
+  feat_46      AUC=0.6640
+  feat_209     AUC=0.6637
+  feat_219     AUC=0.6554
+  feat_35      AUC=0.6426
+  feat_298     AUC=0.6401
+  feat_53      AUC=0.6136
+  feat_183     AUC=0.6086
+
+Highest single-feature AUC: 0.6986 (feat_175).
+Interpretation: a 'magic feature' would show AUC > ~0.85-0.90 alone.
+No single-feature magic bullet found.
+
+=== (c) Capacity test: unregularized DecisionTree, train vs held-out AUC ===
+train AUC (fit set, unregularized -> near-perfect memorization expected): 1.0000
+held-out val AUC: 0.5916
+gap: 0.4084
+Val AUC drops well below train AUC -> normal overfitting, no deterministic rule found.
+This confirms a real generalization ceiling exists (unlike a leaked dataset).
+
+=== (d) Duplicate-row label consistency ===
+See 06_duplicate_rows_report.txt: 0 duplicate feature-rows found in train, so
+there are zero duplicate-feature groups to check for label conflicts. This
+diagnostic is N/A for this dataset (unlike the old competition, which had
+confirmed label-conflicting duplicate rows).

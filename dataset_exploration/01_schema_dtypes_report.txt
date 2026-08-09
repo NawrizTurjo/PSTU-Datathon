@@ -1,0 +1,48 @@
+=== Shape ===
+train.csv: 76020 rows x 351 cols
+test.csv:  60654 rows x 351 cols
+feature columns (excl target/id): 350
+
+=== Column order check ===
+train/test feature columns identical and same order: PASS
+id is last column of test.csv: PASS
+
+=== Dtypes (train, feature cols only) ===
+int64:   212
+float64: 132
+object:  6
+
+=== Object (categorical string) columns ===
+  feat_142
+  feat_157
+  feat_318
+  feat_320
+  feat_325
+  feat_337
+
+=== Missing values ===
+train total NaN cells: 0
+test total NaN cells:  0
+
+=== Target balance ===
+TARGET
+0    73012
+1     3008
+positive rate: 0.039569 (3008 / 76020)
+
+=== Sample dtypes per column (first 15 feature cols) ===
+feat_1       int64
+feat_2       int64
+feat_3       int64
+feat_4       int64
+feat_5     float64
+feat_6     float64
+feat_7     float64
+feat_8       int64
+feat_9       int64
+feat_10      int64
+feat_11      int64
+feat_12      int64
+feat_13    float64
+feat_14      int64
+feat_15    float64

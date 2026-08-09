@@ -1,0 +1,48 @@
+{
+  "backend": "lightgbm",
+  "oof_auc": 0.8928099321111306,
+  "threshold": 0.18295655644184936,
+  "target_metric": "binary_f1",
+  "diagnostics": {
+    "metric": "binary_f1",
+    "threshold": 0.18295655644184936,
+    "n_pred_pos": 3547,
+    "pred_pos_rate": 0.046658774006840306,
+    "binary_f1": 0.39572845156369185,
+    "macro_f1": 0.6842511385219909,
+    "argmax_threshold": 0.1903249187846579,
+    "argmax_score": 0.3983130271790066,
+    "plateau_lo": 0.1557538159761439,
+    "plateau_hi": 0.2170258714760303,
+    "plateau_width_k": 1322,
+    "cost_vs_argmax": 0.0025845756153147215
+  },
+  "naive_half_cut": {
+    "binary_f1": 0.21049753963914708,
+    "macro_f1": 0.5955171312111169
+  },
+  "per_seed_auc": {
+    "42": 0.8917350350306741,
+    "1337": 0.8906531030748662,
+    "2026": 0.8916530070180827
+  },
+  "submission_positive_rate": 0.03970059682790912,
+  "n_features": 318,
+  "n_dropped_columns": 49,
+  "base_dropped_columns": 44,
+  "winning_arm": {
+    "feature_arm": "drop_top5_shift",
+    "imbalance_arm": "none",
+    "extra_drop_cols": [
+      "feat_182",
+      "feat_44",
+      "feat_116",
+      "feat_306",
+      "feat_97"
+    ]
+  },
+  "adversarial_auc": 0.5733029263237152,
+  "shift_holdout_binary_f1": 0.40680851063829787,
+  "shift_holdout_macro_f1": 0.6872931185247335,
+  "shift_holdout_n": 11403
+}

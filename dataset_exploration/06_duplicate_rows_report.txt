@@ -1,0 +1,9 @@
+=== Exact full-row duplicates (all feature columns identical) ===
+train: 0 rows involved in a full-feature-row duplicate (0 would be dropped by keep='first')
+test:  0 rows involved in a full-feature-row duplicate
+
+=== Label conflicts within duplicate-feature-row groups (train only) ===
+No duplicate feature-rows in train -> no label conflicts possible.
+
+=== Train rows whose features exactly match a test row ===
+feature-groups appearing in BOTH train and test: 0

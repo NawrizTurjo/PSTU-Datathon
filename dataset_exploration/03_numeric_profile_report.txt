@@ -1,0 +1,163 @@
+=== Numeric columns: describe() -> 03_numeric_describe.csv ===
+n numeric columns: 344
+
+=== Sentinel hunt: feat_109 (-999999 fingerprint) ===
+train: min=-999999, count(==-999999)=116 (0.1526%)
+test:  min=-999999, count(==-999999)=89 (0.1467%)
+other numeric columns containing exact value -999999: 0
+
+=== Sentinel hunt: feat_169 (reported min ~-1.11e8) ===
+train: min=-111227971.8699014, max=10076313309.954737
+test:  min=-106278933.32842284, max=10071826084.958857
+most frequent values (train):
+feat_169
+-1.040753e+07    1
+ 1.270864e+07    1
+-4.714005e+06    1
+-2.191424e+06    1
+ 1.003212e+10    1
+-4.709327e+06    1
+-3.848413e+05    1
+-1.336742e+07    1
+ 2.733164e+07    1
+ 2.916094e+06    1
+rows below 0.1th percentile: 77
+value at min: -111227971.8699014, 2nd smallest distinct: -108184164.0843084
+
+=== General extreme-value scan: columns with |min| or |max| > 1e6 ===
+column                     min               max
+feat_102                 -0.90        3000000.00
+feat_106                  0.00        6083691.87
+feat_11                  -1.00     9999999999.00
+feat_116             -59313.30       54941123.71
+feat_119              -4942.26        3458077.32
+feat_124                 -1.00     9999999999.00
+feat_135                  0.00     9999999999.00
+feat_144                 -1.00     9999999999.00
+feat_149                  0.00     9999999999.00
+feat_158                  0.00     9999999999.00
+feat_159             -34323.99       17454804.47
+feat_162                  0.00        3004185.60
+feat_167                  0.00        3998687.46
+feat_169         -111227971.87    10076313309.95
+feat_171                 -1.00     9999999999.00
+feat_180             -19561.80       10475283.83
+feat_181              -7739.98        3552851.18
+feat_183              -3937.64        1359922.75
+feat_187            -305139.18       17115116.26
+feat_191              -7704.89        2732623.69
+feat_196                  0.00     9999999999.00
+feat_204                  0.00     9999999999.00
+feat_21                  -1.00     9999999999.00
+feat_215             -13044.07        4737716.01
+feat_217                  0.00        1155003.00
+feat_226                  0.00     9999999999.00
+feat_227             -25939.69       13071887.77
+feat_23               -4051.88        1472884.57
+feat_230                  0.00        1500000.00
+feat_242             -21575.17       12221888.93
+feat_244                  0.00        2272859.43
+feat_245                  0.00        3000538.14
+feat_249                  0.00        3410058.66
+feat_25                   0.00        1034482.74
+feat_250               5163.75       22034738.76
+feat_253             -12799.31        4051622.13
+feat_258                  0.00        2754476.46
+feat_26                  -1.00     9999999999.00
+feat_265                  0.00        3008077.32
+feat_276                  0.00        3000000.00
+feat_280             -11534.00        3622018.71
+feat_296             -49418.42        3276176.25
+feat_299                  0.00        2310003.00
+feat_30                  -1.00     9999999999.00
+feat_301                 -1.00     9999999999.00
+feat_306              -6405.42        2040230.85
+feat_31                   0.00     9999999999.00
+feat_315                 -1.00     9999999999.00
+feat_316                  0.00        6119500.14
+feat_330                 -1.00     9999999999.00
+feat_334             -60022.24       65518916.69
+feat_336                  0.00     9999999999.00
+feat_340                 -1.00     9999999999.00
+feat_346                  0.00        1500000.00
+feat_350              -9030.07        4550122.69
+feat_36                  -1.00     9999999999.00
+feat_41                   0.00        3008077.32
+feat_44              -15326.92        6015652.81
+feat_54              -95699.71       28268733.26
+feat_68                   0.00        3525776.88
+feat_69                  -8.04        1542339.36
+feat_74                  -1.00     9999999999.00
+feat_77                  -1.00     9999999999.00
+feat_80              -12438.90        7045064.57
+feat_91                   0.00        1500000.00
+feat_96                  -1.00     9999999999.00
+feat_97              -15255.97        7760469.72
+total: 67 columns
+
+=== NEW FINDING (not in CLAUDE.md): 9999999999 sentinel across 23 columns ===
+Many columns cap at exactly 9999999999 (1e10-1). This is the classic Santander
+'delta_imp_*' sentinel fingerprint. Same treat-as-missing logic as -999999 in
+feat_109 should apply here.
+columns affected: 23
+column         n_train    n_test
+feat_11              4         6
+feat_21            370       302
+feat_26              4         6
+feat_30              1         8
+feat_31              2         0
+feat_36            370       302
+feat_74             70        62
+feat_77              1         8
+feat_96             39        33
+feat_124            42        23
+feat_135             1         1
+feat_144            39        33
+feat_149             1         0
+feat_158             2         1
+feat_171             5         9
+feat_196             1         1
+feat_204            38        19
+feat_226            38        19
+feat_301            20        11
+feat_315            20        11
+feat_330             5         9
+feat_336             4         0
+feat_340            70        62
+
+=== Zero-inflation ===
+numeric columns with zero_ratio >= 0.90: 252 / 344
+full ranked list -> 03_zero_inflation_ratios.csv
+Top 15 most zero-inflated:
+feat_322   1.0000
+feat_308   1.0000
+feat_304   1.0000
+feat_37    1.0000
+feat_317   1.0000
+feat_319   1.0000
+feat_290   1.0000
+feat_287   1.0000
+feat_58    1.0000
+feat_178   1.0000
+feat_166   1.0000
+feat_218   1.0000
+feat_224   1.0000
+feat_212   1.0000
+feat_241   1.0000
+
+Bottom 15 (least zero-inflated):
+feat_117   0.0000
+feat_116   0.0000
+feat_280   0.0000
+feat_253   0.0000
+feat_250   0.0000
+feat_97    0.0000
+feat_261   0.0000
+feat_105   0.0000
+feat_5     0.0000
+feat_298   0.0000
+feat_296   0.0000
+feat_23    0.0000
+feat_306   0.0000
+feat_305   0.0000
+feat_350   0.0000

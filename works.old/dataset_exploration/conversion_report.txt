@@ -1,0 +1,69 @@
+Bool-text columns decoded (হ্যাঁ->1, না->0):
+  - are_battery_terminals_safe
+  - are_solar_panels_clean
+  - has_active_grid_connection
+  - has_active_maintenance_schedule
+  - has_alternative_water_source
+  - has_auto_voltage_regulator
+  - has_battery_backup_system
+  - has_constant_charge_controller_issue
+  - has_constant_maintenance_log
+  - has_constant_manual_pump_backup
+  - has_constant_pipe_corrosion_issue
+  - has_constant_power_failure_log
+  - has_constant_technician_availability
+  - has_dust_accumulation_on_panels
+  - has_emergency_short_term_fund
+  - has_flood_submersion_history
+  - has_historical_grid_failure_record
+  - has_long_term_govt_subsidy
+  - has_no_flood_submersion_history
+  - has_no_medium_term_fund_balance
+  - has_no_recent_alert_emission
+  - has_no_recent_alert_received
+  - has_no_recent_maintenance_log
+  - has_no_recent_power_failure_log
+  - has_no_recent_power_receipt
+  - has_no_reimbursement_delta
+  - has_primary_solar_inverter
+  - has_remote_monitoring_system
+  - has_solar_charge_controller
+  - has_solar_panel_cleaning_schedule
+  - has_zero_grid_power_balance
+  - has_zero_medium_term_avg_balance
+  - has_zero_solar_efficiency_balance
+  - has_zero_water_tank_balance
+  - is_community_trained_for_maintenance
+  - is_community_untrained_for_maintenance
+  - is_groundwater_level_fluctuating
+  - is_groundwater_level_stable
+  - is_inverter_fan_functional
+  - is_local_technician_available
+  - is_local_technician_unavailable
+  - is_not_in_cyclone_prone_zone
+  - is_pipe_corroded_by_salt
+  - is_pipe_free_from_salt_corrosion
+  - is_pump_draw_dry
+  - is_pump_motor_cool
+  - is_pump_motor_overheating
+  - is_pump_not_drawing_dry
+  - is_salinity_sensor_active
+  - is_salinity_sensor_inactive
+  - is_submersible_pump_non_operational
+  - is_submersible_pump_operational
+  - is_water_source_arsenic_safe
+  - lacks_alternative_water_source
+  - lacks_auto_voltage_regulator
+  - lacks_battery_backup_system
+  - lacks_emergency_short_term_fund
+  - lacks_long_term_govt_subsidy
+  - lacks_primary_solar_inverter
+  - lacks_remote_monitoring_system
+  - lacks_short_term_maintenance_contract
+  - lacks_solar_charge_controller
+  - lacks_solar_panel_cleaning_schedule
+
+train: rows=48128, unexpected_bool_values=0, out=dataset_exploration/converted_train.csv
+test: rows=12032, unexpected_bool_values=0, out=dataset_exploration/converted_test.csv
+dataset_exploration/converted_train.csv size: 63.3 MB
+dataset_exploration/converted_test.csv size: 15.8 MB

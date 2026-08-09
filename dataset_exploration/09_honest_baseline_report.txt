@@ -1,0 +1,21 @@
+=== Honest baseline: HistGradientBoostingClassifier, 5-fold stratified OOF ===
+(local stand-in for LightGBM/XGBoost/CatBoost, unavailable in this env;
+ swap in real GBDT libraries on Kaggle for the actual solution)
+
+columns used: 306 / 350 (dropped 44 exact-constant/duplicate columns)
+sentinels treated as NaN: feat_109 (-999999), 23 cols (9999999999)
+
+Per-fold ROC-AUC: [0.8797, 0.8812, 0.8931, 0.8857, 0.8945]
+Mean fold AUC: 0.8869 +/- 0.0060
+OOF ROC-AUC (all folds pooled): 0.8868
+
+=== Threshold sweep summary (full sweep -> 09_threshold_sweep.csv) ===
+Best threshold for BINARY F1: t=0.19  binary_f1=0.3841  macro_f1=0.6786
+Best threshold for MACRO F1:  t=0.19  binary_f1=0.3841  macro_f1=0.6786
+Naive t=0.5:                  binary_f1=0.1777  macro_f1=0.5791
+
+=== This anchors Stage 2/3 ===
+A cleaned-up out-of-the-box GBDT already reaches OOF AUC 0.8868 and tuned binary_f1 0.3841 / macro_f1 0.6786.
+Real LightGBM/XGBoost/CatBoost with proper hyperparameter tuning, categorical
+target-encoding, and row-aggregate features (per the Santander-lineage playbook)
+should beat this. Treat these numbers as a floor, not a ceiling.

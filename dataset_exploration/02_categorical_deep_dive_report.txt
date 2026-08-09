@@ -1,0 +1,189 @@
+=== Categorical column cardinality + train/test overlap ===
+column     train_levels test_levels  shared train_only test_only  test_rows_w_unseen pct_unseen
+feat_142           2333        2296    2241         92        55                  89    0.1467%
+feat_157            627         626     618          9         8                  11    0.0181%
+feat_318             12          12      12          0         0                   0    0.0000%
+feat_320            119         118     118          1         0                   0    0.0000%
+feat_325           1710        1693    1666         44        27                  47    0.0775%
+feat_337             39          39      39          0         0                   0    0.0000%
+
+=== Prefix check (expected format per CLAUDE.md) ===
+  feat_142: expected prefix 'PRD_' -> train all-match=True, test all-match=True
+  feat_157: expected prefix 'PRV_' -> train all-match=True, test all-match=True
+  feat_318: expected prefix 'PERF_' -> train all-match=True, test all-match=True
+  feat_320: expected prefix 'CH_' -> train all-match=True, test all-match=True
+  feat_325: expected prefix 'SEG_' -> train all-match=True, test all-match=True
+  feat_337: expected prefix 'OFC_' -> train all-match=True, test all-match=True
+
+=== Value counts + target rate by level (low-cardinality cols only, <=40 levels) ===
+
+-- feat_318 (12 levels) --
+          count   mean
+feat_318              
+PERF_10   19008 0.0368
+PERF_08   12807 0.0387
+PERF_09   10923 0.0374
+PERF_03    9014 0.0475
+PERF_02    7432 0.0453
+PERF_06    7214 0.0366
+PERF_07    4165 0.0365
+PERF_11    1878 0.0389
+PERF_04    1804 0.0443
+PERF_05    1051 0.0400
+PERF_00     679 0.0383
+PERF_01      45 0.0222
+
+-- feat_337 (39 levels) --
+          count   mean
+feat_337              
+OFC_09     9739 0.0390
+OFC_14     8600 0.0363
+OFC_04     7027 0.0411
+OFC_01     6283 0.0392
+OFC_08     6038 0.0439
+OFC_06     4871 0.0378
+OFC_22     4281 0.0388
+OFC_07     2724 0.0422
+OFC_02     2698 0.0434
+OFC_05     2570 0.0362
+OFC_39     2325 0.0396
+OFC_29     2236 0.0403
+OFC_19     2049 0.0415
+OFC_12     1935 0.0434
+OFC_03     1669 0.0365
+OFC_34     1386 0.0455
+OFC_24     1129 0.0354
+OFC_23     1018 0.0403
+OFC_35      994 0.0302
+OFC_37      787 0.0330
+OFC_10      670 0.0493
+OFC_18      656 0.0442
+OFC_32      626 0.0415
+OFC_16      533 0.0413
+OFC_27      517 0.0445
+OFC_13      407 0.0369
+OFC_36      374 0.0428
+OFC_26      349 0.0229
+OFC_20      319 0.0376
+OFC_15      298 0.0201
+OFC_17      220 0.0364
+OFC_30      195 0.0462
+OFC_25      130 0.0385
+OFC_00       99 0.0303
+OFC_31       89 0.0674
+OFC_21       76 0.0395
+OFC_33       54 0.0741
+OFC_28       46 0.0217
+OFC_11        3 0.0000
+
+=== Top-10 most frequent levels (high-cardinality cols, >40 levels) ===
+
+-- feat_142 (2333 train levels) --
+feat_142
+PRD_01926    374
+PRD_00021    334
+PRD_00295    275
+PRD_00516    257
+PRD_00243    243
+PRD_01568    237
+PRD_02292    225
+PRD_00327    216
+PRD_00860    215
+PRD_00655    214
+target rate among top-10 levels:
+feat_142
+PRD_00021   0.0509
+PRD_00243   0.0412
+PRD_00295   0.0255
+PRD_00327   0.0185
+PRD_00516   0.0467
+PRD_00655   0.0421
+PRD_00860   0.0140
+PRD_01568   0.0422
+PRD_01926   0.0374
+PRD_02292   0.0578
+
+-- feat_157 (627 train levels) --
+feat_157
+PRV_544    894
+PRV_626    882
+PRV_227    843
+PRV_036    760
+PRV_344    758
+PRV_360    757
+PRV_391    742
+PRV_236    697
+PRV_238    664
+PRV_092    634
+target rate among top-10 levels:
+feat_157
+PRV_036   0.0197
+PRV_092   0.0426
+PRV_227   0.0273
+PRV_236   0.0330
+PRV_238   0.0407
+PRV_344   0.0435
+PRV_360   0.0410
+PRV_391   0.0391
+PRV_544   0.0268
+PRV_626   0.0952
+
+-- feat_320 (119 train levels) --
+feat_320
+CH_001    4575
+CH_049    3683
+CH_037    2817
+CH_069    2757
+CH_061    2575
+CH_002    2422
+CH_079    2165
+CH_008    2127
+CH_029    2091
+CH_050    2006
+target rate among top-10 levels:
+feat_320
+CH_001   0.0376
+CH_002   0.0396
+CH_008   0.0324
+CH_029   0.0354
+CH_037   0.0348
+CH_049   0.0356
+CH_050   0.0334
+CH_061   0.0656
+CH_069   0.0428
+CH_079   0.0351
+
+-- feat_325 (1710 train levels) --
+feat_325
+SEG_0605    442
+SEG_1685    407
+SEG_0667    319
+SEG_1401    316
+SEG_0900    305
+SEG_1199    304
+SEG_1185    287
+SEG_0452    282
+SEG_0048    277
+SEG_0746    273
+target rate among top-10 levels:
+feat_325
+SEG_0048   0.0253
+SEG_0452   0.0355
+SEG_0605   0.0317
+SEG_0667   0.0157
+SEG_0746   0.0440
+SEG_0900   0.0197
+SEG_1185   0.0348
+SEG_1199   0.0296
+SEG_1401   0.0316
+SEG_1685   0.0418
+
+=== Recommended unseen-level handling ===
+All 6 columns have test rows with levels not present in train (see pct_unseen above).
+Any encoding scheme MUST map unseen-at-inference levels to a reserved bucket rather
+than erroring or NaN-ing:
+  - target/frequency encoding: map unseen level -> global train mean / 0 count, not NaN
+  - one-hot / ordinal (sklearn): use handle_unknown='ignore' / an explicit UNK category
+  - tree models fed raw codes: fit a LabelEncoder-like mapping on train, unseen -> -1
+This must be validated by refitting only on train and transforming test with fitted
+mapping (never fit on train+test concatenated, which leaks the level identity).

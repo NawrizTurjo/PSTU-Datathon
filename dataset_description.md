@@ -1,63 +1,100 @@
-# 📁 Dataset Description
+# Dataset Description
 
-## 📂 Files
+> Verbatim transcription of the competition **Data** and **Rules** tabs, reformatted as
+> markdown. Wording is unchanged. See [`CLAUDE.md`](CLAUDE.md) for analysis and for findings
+> that contradict the description (notably: 6 of the 350 "numerical" features are actually
+> categorical strings).
+>
+> Source: <https://www.kaggle.com/competitions/pstu-data-thon-2026-vol-1/>
 
-- **`train.csv`**: The training set containing historical sensor data, maintenance logs, and the target variable.
-- **`test.csv`**: The test set containing the same features as the training set, but without the target variable. You must predict the failure probability along with binary (`0`, `1`) predictions for these stations.
+## 📊 Data
 
----
+- **Train Set:** Historical account records containing 350 anonymized numerical features and a
+  binary target variable.
+- **Test Set:** Account records for which you must submit predictions. In the testing columns
+  there have an extra columns named `"id"` that not present in training set.
+- **Features:** `feat_1` through `feat_350` — pre-processed, anonymized numerical indicators.
+  These features do not carry explicit semantic meaning and have been transformed to preserve
+  confidentiality.
+- **Target:** `TARGET`
+  - `0` = Stable Account
+  - `1` = At-Risk Account
 
-## 📊 Columns
-
-The dataset contains a mix of categorical, numerical, and time-series aggregated features.
-
-### 🏛️ Base Attributes
-- **`base_number_of_dependent_farmers`**: Number of farmers relying on this station.
-- **`base_station_installation_age_years`**: Age of the station in years.
-- **`base_distance_from_coastal_river_km`**: Distance from the main river estuary.
-
-### 📡 Real-time Sensor Readings
-- **`sensor_current_battery_voltage_volts`**, **`sensor_ambient_temperature_celsius`**, **`sensor_water_salinity_ppm`**, etc.: Current readings from IoT sensors deployed at the station.
-
-### ⚙️ Operational Counts & Financial Metrics
-- **`count_dry_run_events`**, **`count_voltage_surge_events`**: Historical count of specific anomalies.
-- **`cost_commercial_maintenance_bdt`**, **`cost_govt_grant_bdt`**: Financial logs associated with the station.
-
-### 🎯 Target Variable
-- **`Your_Target_Column`**: *(Train set only)* Binary indicator (`1` = Critical Failure within 7 days, `0` = Normal Operation).
+> **For mark distribution please see the Rules section.**
 
 ---
 
-## 🔮 What am I predicting?
+# Competition Rules
 
-You are predicting the **probability** (a float value between `0.0` and `1.0`) that a given station will experience a critical failure in the next 7 days, along with binary `0`/`1` predictions.
+## ⏱️ Competition Timeline
 
----
+| Event | Date & Time (GMT+6) |
+| :--- | :--- |
+| Competition Starts | 9 August 2026, 6:00 PM |
+| Final Submission Deadline | 13 August 2026, 6:00 PM |
+| Private Leaderboard Reveal | 13 August 2026, 6:30 PM |
+| Inference Notebook Submission Deadline | 13 August 2026, 11:59 PM |
+| Final Results & Winner Announcement | 15 August 2026 |
 
-## 📝 Submission Format (STRICTLY ENFORCED)
+## 📊 Evaluation Breakdown
 
-Your submission file must exactly match the format below. It must contain a header and exactly three columns in this specific order:
+| Component | Weight | Description |
+| :--- | :---: | :--- |
+| Public Leaderboard | 10% | Real-time score on 10% of the test data during the competition. |
+| Private Leaderboard | 40% | Final score on 50% of the test data, revealed only after the deadline. |
+| Hidden Test (Inference Notebook) | 40% | Post-competition evaluation on 40% of completely unseen data via your submitted inference notebook. |
+| Presentation + Code + Submission | 10% | Quality of final presentation, code documentation and submission file format. |
 
-1. **`id`**: The row index, starting from `0` and incrementing by `1`.
-2. **`Target_Binary`**: Your predicted binary classification (`0` for Normal, `1` for Critical Failure).
-3. **`Target_Probability`**: The predicted probability of failure (a float value strictly between `0.0` and `1.0`). This is mandatory for the ROC-AUC calculation.
+- If two team score the same, then the nobility of solution will be consider.
+- **Top 20 from private leaderboard must submit the code + inference notebook + presentation +
+  pipeline of your works.**
 
-### 💡 Submission Example (`submission.csv`)
+## 1. Data & External Resources
+
+| Rule | Status | Details |
+| :--- | :---: | :--- |
+| External Datasets | ❌ Prohibited | You may NOT use any external dataset for model training. Only the provided `train.csv` and official features are allowed. |
+| Pre-trained Models | ⚠️ Allowed with disclosure | Publicly available pre-trained models (e.g., from HuggingFace, ImageNet weights) are permitted but must be declared in your write-up. |
+| Data Augmentation | ✅ Allowed | Synthetic data generation, SMOTE, feature engineering, and augmentation on the training data only is permitted. |
+| Test Data Modification | ❌ Strictly Prohibited | Any manual modification, label leakage, or tampering with the test set will result in immediate disqualification. |
+
+## 2. Submission Requirements
+
+| Requirement | Mandatory | Details |
+| :--- | :---: | :--- |
+| Prediction File (CSV) | ✅ Yes | `id,TARGET` format with binary scores. |
+| Inference Notebook | ✅ Yes | Must be submitted within 6 hours after competition ends. The notebook must reproduce your predictions deterministically. |
+| Code Repository | ✅ Yes | Full training and inference code must be shared via GitHub or Kaggle Notebook. |
+| Presentation (PDF/PPT) | ✅ Yes | Brief explanation of approach, feature engineering, and model architecture. |
+
+## 3. Leaderboard & Scoring
+
+- **Public LB:** Updates in real-time on 10% of test data.
+- **Private LB:** Frozen until competition ends; evaluated on 50% of test data.
+- **Hidden Test:** A separate 40% holdout set will be evaluated using your inference notebook
+  after the competition closes.
+- **Tie-Breaker:** In case of a tie on model performance, the Presentation + Code Quality +
+  Nobility of Solution score will be used as the tie-breaker.
+
+## 4. Disqualification Criteria
+
+You will be immediately disqualified if:
+
+- You use external datasets not provided by the organizers.
+- You modify, leak, or reverse-engineer labels from the test set.
+- Your inference notebook fails to run or produces different results from your submission.
+- You fail to submit the required notebook, code, or presentation by the deadline.
+- You engage in team merging, account sharing, or any form of collusion.
+- You try to generate target values with LLMs.
+
+## 📤 Submission Format
+
+Your CSV file must follow this exact format:
 
 ```csv
-id,Target_Binary,Target_Probability
-0,0,0.0123
-1,1,0.8745
-2,0,0.0056
+id,TARGET
+2,0
+5,0
+6,0
+7,0
 ```
-
-> [!WARNING]
-> ### ⚠️ STRICT FORMAT VALIDATION WARNING
->
-> The evaluation script will automatically reject any submission that:
-> - Does not have the exact column names: `['id', 'Target_Binary', 'Target_Probability']`.
-> - Contains missing (`NaN`) or infinite values in the `Target_Probability` column.
-> - Contains probability values outside the `0.0` to `1.0` range.
-> - Has a different number of rows than the `test.csv` file.
->
-> **If your file violates any of these rules, you will receive an "Evaluation Error" and your score will not be calculated.**

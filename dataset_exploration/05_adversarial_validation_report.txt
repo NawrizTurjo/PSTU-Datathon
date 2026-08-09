@@ -1,0 +1,63 @@
+=== Adversarial validation: classifier predicting is_test ===
+5-fold CV ROC-AUC (train vs test discrimination): 0.5742 +/- 0.0027
+Interpretation: ~0.50 = train/test indistinguishable (safe, iid split).
+  Notably >0.5 (e.g. >0.55-0.60) = real covariate shift exists; CV may
+  overstate leaderboard performance, consider adversarial-weighting or
+  dropping the most shift-driving features.
+
+Top 20 features driving train/test separability (importance in is_test classifier):
+feat_182   0.1706
+feat_44    0.0702
+feat_116   0.0666
+feat_306   0.0582
+feat_97    0.0470
+feat_142   0.0358
+feat_296   0.0353
+feat_190   0.0340
+feat_187   0.0247
+feat_334   0.0199
+feat_253   0.0176
+feat_325   0.0175
+feat_169   0.0148
+feat_175   0.0130
+feat_72    0.0127
+feat_250   0.0126
+feat_15    0.0123
+feat_313   0.0107
+feat_47    0.0099
+feat_54    0.0082
+
+=== Out-of-range features: test values outside train's [min,max] (numeric only) ===
+column             train_min         train_max  n_below  n_above        test_min          test_max
+feat_116           -59313.30       54941123.71       23        3       -82408.03       74823366.60
+feat_44            -15326.92        6015652.81        7        1       -19821.14        8417096.42
+feat_99                 0.00          24650.01        0        8            0.00         217762.23
+feat_253           -12799.31        4051622.13        6        2       -15238.17        4457130.90
+feat_334           -60022.24       65518916.69        3        3       -84866.48       84413438.33
+feat_213                0.00          50003.88        0        5            0.00         146605.32
+feat_217                0.00        1155003.00        0        5            0.00        2880000.00
+feat_274                0.00         210001.35        0        5            0.00         596253.00
+feat_54            -95699.71       28268733.26        2        2      -100339.87       29936291.21
+feat_57               -15.77            376.34        4        0          -18.66            372.36
+feat_98                 0.00           1260.00        0        4            0.00          24000.00
+feat_103                0.00          21024.81        0        4            0.00          47943.96
+feat_130                0.00            342.00        0        4            0.00            426.00
+feat_190             -283.07          40920.59        0        4         -269.66          48326.64
+feat_193               -9.43            185.56        0        4           -8.48            186.19
+feat_198                0.00          16566.81        0        4            0.00          28927.89
+feat_6                  0.00          13207.32        0        3            0.00          27000.00
+feat_7                -28.15            740.94        3        0          -34.39            738.61
+feat_90                 0.00         138831.63        1        2           -0.60         162355.80
+feat_117             -236.74          39722.46        0        3         -224.60          53852.15
+feat_120                0.00             21.00        0        3            0.00             27.00
+feat_155                0.00         668335.32        0        3            0.00        1202339.22
+feat_219             2644.98         255951.39        1        2         2444.07         300050.53
+feat_250             5163.75       22034738.76        1        2         1202.73       28894395.51
+feat_299                0.00        2310003.00        0        3            0.00        3000000.00
+feat_311                0.00          91778.73        1        2           -0.60         138054.96
+feat_312               -0.07              1.08        3        0           -0.09              1.07
+feat_16                 0.00           8237.82        0        2            0.00          21093.96
+feat_34                 0.00             81.00        0        2            0.00            144.00
+feat_41                 0.00        3008077.32        0        2            0.00        4202599.17
+
+Total numeric columns with out-of-range test values: 93 / 344

@@ -1,0 +1,57 @@
+=== Pseudo-station grouping by exact match on base_* columns ===
+Grouping key: ['base_number_of_dependent_farmers', 'base_station_installation_age_years', 'base_distance_from_coastal_river_km', 'base_solar_panel_tilt_angle_degrees', 'base_pump_motor_depth_meters']
+
+Unique base_* combinations in train: 39238 (train rows: 48128)
+Rows in a group of size > 1: 9250 (19.22% of train)
+Max group size: 1265, groups with size>1: 360
+
+Top 10 largest groups (size, base_* values):
+  size=1265  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 18.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 100.0, 'base_pump_motor_depth_meters': 0.0}
+  size=915  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 18.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 3.0303030303030303, 'base_pump_motor_depth_meters': 0.0}
+  size=331  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 19.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 3.0303030303030303, 'base_pump_motor_depth_meters': 0.0}
+  size=319  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 19.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 100.0, 'base_pump_motor_depth_meters': 0.0}
+  size=212  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 20.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 3.0303030303030303, 'base_pump_motor_depth_meters': 0.0}
+  size=203  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 20.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 100.0, 'base_pump_motor_depth_meters': 0.0}
+  size=175  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 18.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 1.0101010101010102, 'base_pump_motor_depth_meters': 0.0}
+  size=164  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 21.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 3.0303030303030303, 'base_pump_motor_depth_meters': 0.0}
+  size=156  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 18.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 2.0202020202020203, 'base_pump_motor_depth_meters': 0.0}
+  size=151  {'base_number_of_dependent_farmers': 2, 'base_station_installation_age_years': 21.0, 'base_distance_from_coastal_river_km': 0.5090757718457412, 'base_solar_panel_tilt_angle_degrees': 100.0, 'base_pump_motor_depth_meters': 0.0}
+
+Mean within-group target rate across top groups: 0.0525
+Std of within-group target rate across top groups: 0.1129
+(overall train target rate is 0.0500 - if groups were a real station id,
+ within-group rates should cluster tightly around one station's true risk,
+ not scatter close to the global rate with high variance)
+
+=== Why groups collide: cardinality of each base_* column ===
+  base_number_of_dependent_farmers: 169 distinct values
+  base_station_installation_age_years: 100 distinct values
+  base_distance_from_coastal_river_km: 37253 distinct values
+  base_solar_panel_tilt_angle_degrees: 5 distinct values
+  base_pump_motor_depth_meters: 22 distinct values
+
+Dominant repeated value in base_distance_from_coastal_river_km: 0.5090757718457412 appears in 9384 rows (19.5% of train) - almost certainly a
+default/fill constant, not a real recurring distance. base_solar_panel_tilt_angle_degrees
+has only 5 distinct values and
+base_pump_motor_depth_meters only 22.
+=> Large 'groups' above are coincidental collisions on this dominant fill value plus
+   a handful of low-cardinality columns, NOT evidence of a real repeated station_id.
+
+=== Rounded base_* grouping (tolerance for float noise) ===
+Unique combos after rounding base_* to 2 decimals: 13775 (vs 39238 unrounded, vs 48128 rows)
+
+=== Row-order chronology check ===
+If row order were chronological per-station, adjacent rows sharing a group
+would show small monotonic drift in trend_/cost_ cumulative columns. Since
+no repeated exact station key was found above, there is no group structure
+to test this against - row order in train.csv/test.csv looks like independent
+shuffled station-snapshots, not a per-station time series.
+
+=== Recommendation ===
+base_* attributes do NOT recover a real station_id - the apparent groups are
+collisions on a dominant fill value plus a handful of low-cardinality columns,
+and within-group target rates scatter widely rather than clustering per group.
+Plain StratifiedKFold is appropriate here (also supported by the adversarial-
+validation result showing train/test are iid, script 06) - GroupKFold is not
+needed unless a hidden exact-duplicate full-feature-row grouping is found
+(see script 09 duplicate-row check).

@@ -1,0 +1,7 @@
+feature_arm,imbalance_arm,extra_drop,spw,quick_full_f1,shift_holdout_f1,n_holdout_scored
+drop_top5_shift,none,"['feat_182', 'feat_44', 'feat_116', 'feat_306', 'feat_97']",,0.38900308324768756,0.4126984126984127,6885
+drop_top5_shift,scale_pos_weight,"['feat_182', 'feat_44', 'feat_116', 'feat_306', 'feat_97']",24.272606382978722,0.38479321859748267,0.40896358543417366,6885
+keep_all,none,[],,0.391347588264545,0.40437158469945356,6885
+drop_top1_feat182,none,['feat_182'],,0.3860190182472372,0.403954802259887,6885
+drop_top1_feat182,scale_pos_weight,['feat_182'],24.272606382978722,0.3864337101747174,0.39941690962099125,6885
+keep_all,scale_pos_weight,[],24.272606382978722,0.38083034341363403,0.38935574229691877,6885

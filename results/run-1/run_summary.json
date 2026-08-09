@@ -1,0 +1,32 @@
+{
+  "backend": "lightgbm",
+  "oof_auc": 0.8919894607458874,
+  "threshold": 0.1735501119142028,
+  "target_metric": "binary_f1",
+  "diagnostics": {
+    "metric": "binary_f1",
+    "threshold": 0.1735501119142028,
+    "n_pred_pos": 3759,
+    "pred_pos_rate": 0.049447513812154696,
+    "binary_f1": 0.395448500073888,
+    "macro_f1": 0.6836438634544407,
+    "argmax_threshold": 0.19518627223321067,
+    "argmax_score": 0.3966863151186873,
+    "plateau_lo": 0.1447315480471307,
+    "plateau_hi": 0.20945869801678407,
+    "plateau_width_k": 1584,
+    "cost_vs_argmax": 0.0012378150447993064
+  },
+  "naive_half_cut": {
+    "binary_f1": 0.20678246484698098,
+    "macro_f1": 0.5936986852746559
+  },
+  "per_seed_auc": {
+    "42": 0.8909731557534699,
+    "1337": 0.8896691721690169,
+    "2026": 0.890760024073571
+  },
+  "submission_positive_rate": 0.04281663204405316,
+  "n_features": 323,
+  "n_dropped_columns": 44
+}

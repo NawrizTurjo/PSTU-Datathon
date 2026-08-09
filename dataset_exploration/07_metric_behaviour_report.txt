@@ -1,0 +1,33 @@
+positive rate: 0.039569 (3008/76020)
+
+=== Degenerate floors: binary F1 vs macro F1 ===
+submission       binary_f1    macro_f1
+all zeros           0.0000      0.4899
+all ones            0.0761      0.0381
+
+=== Diagnostic probe recommendation ===
+Submit all-zeros as an early LB probe.
+  LB ~= 0.4899 -> grader is using MACRO F1.
+  LB ~= 0.0000 -> grader is using BINARY F1.
+This single submission resolves the contradiction in the competition page and
+determines the entire thresholding strategy downstream.
+
+=== Quick OOF baseline (RandomForest, 5-fold, NOT the final model) ===
+OOF ROC-AUC (threshold independent): 0.8485
+
+=== Threshold sweep (0.02-0.98, step 0.01) -> 07_threshold_sweep.csv ===
+Best threshold for BINARY F1: t=0.75  binary_f1=0.3104  macro_f1=0.6415
+Best threshold for MACRO F1:  t=0.75  binary_f1=0.3104  macro_f1=0.6415
+Naive t=0.5:                  binary_f1=0.2558  macro_f1=0.5868
+
+Binary-F1 gain from tuning threshold vs naive 0.5: +0.0547
+Macro-F1 gain from tuning threshold vs naive 0.5:  +0.0547
+
+=== Recommendation ===
+Run the diagnostic probe FIRST. Whichever metric it confirms, tune the decision
+threshold on out-of-fold predictions to maximize that exact metric (binary_f1 or
+macro_f1 from this sweep), not accuracy or AUC. Because the grader applies a fixed
+0.5 cut to whatever is submitted, encode the chosen operating point as hard 0/1
+labels (or rank-shift probabilities so the 0.5 cut lands at the tuned threshold).
+Re-tune the threshold every time the model or feature set changes -- the optimum
+is not stable across model versions.

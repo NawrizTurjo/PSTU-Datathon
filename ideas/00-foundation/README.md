@@ -1,156 +1,137 @@
 # 00 — Foundation
 
-Shared setup every other idea assumes. Get this right once and reuse it.
+**Prerequisite, not an idea.** Everything else assumes these exist. ~1–2 hours.
+Nothing here is optional and nothing here is speculative — every step is a direct consequence
+of a measured Stage 1 finding.
 
-**Also read [metric-decomposition.md](metric-decomposition.md)** — it explains what the
-scoring formula rewards and is the single most useful document in `ideas/`.
+## What it is
 
-## Data facts (from `dataset_exploration/`)
+A single preprocessing function, a single CV protocol, and a single metric module, all written
+once and reused by every experiment. The point is that every idea in this folder gets compared
+on identical footing, and that the preprocessing used at training time is *the same code
+object* used at inference time — which is what makes the mandatory inference notebook
+reproducible.
 
-| | |
-|---|---|
-| Train | 48,128 rows × 286 features + target |
-| Test | 12,032 rows × 286 features |
-| Positive rate | 5.00% (2,406 of 48,128) |
-| Ghost/sentinel | `-999999` in `base_number_of_dependent_farmers` only (66 train / 23 test rows) |
-| Droppable columns | 12 (6 constant, 6 exact duplicates) |
-| Train/test shift | none — adversarial AUC 0.4985 |
-| Station grouping | none recoverable — use `StratifiedKFold`, not `GroupKFold` |
-| Sparsity | 143 of 223 numeric columns are ≥90% zero |
-| Label noise | 3.3% of rows in duplicate groups with conflicting labels |
+## Why it should work (measured evidence)
 
-## Input files
+Not a score idea — a correctness idea. But three of its five steps are directly worth score:
 
-Use the **converted** files, not the raw ones. `dataset/train.csv` is 910 MB because 63
-boolean columns were stored as full Bengali sentences; `dataset_exploration/02_convert_to_numeric.py`
-decodes them to 0/1 and gets it down to 63 MB with zero undecodable values.
+- The 44-column drop and sentinel handling are what took the baseline to OOF AUC 0.8868.
+- The categorical unseen-level fallback is the difference between the hidden-test inference run
+  working and **crashing** — measured: `feat_142`/`feat_325`/`feat_157` have levels in test that
+  never appear in train (0.1467% / 0.0775% / 0.0181% of test rows). The hidden test is a
+  *different* 40% of unseen data, so assume it has unseen levels too, likely more.
+- A pinned fold split is what lets you compare idea 02 against idea 03 and believe the
+  difference.
 
-```
-dataset_exploration/converted_train.csv   # 63 MB, includes `id` + target
-dataset_exploration/converted_test.csv    # 16 MB, includes `id`
-```
+## Concrete steps
 
-On Kaggle, either upload these as a dataset or run the conversion script once in the
-notebook (it streams the raw CSV and takes ~10 seconds).
-
-## Preprocessing pipeline
-
-Applied identically to train and test. All steps are justified by measured EDA findings.
+### 1. Path auto-detection
 
 ```python
-import pandas as pd, numpy as np
-
-TARGET = "Your_Target_Column"
-
-# 6 columns constant in BOTH train and test
-CONSTANT_COLS = [
-    "has_no_medium_term_fund_balance", "has_no_reimbursement_delta",
-    "has_zero_grid_power_balance", "has_zero_medium_term_avg_balance",
-    "has_zero_solar_efficiency_balance", "has_zero_water_tank_balance",
+CANDIDATE_DIRS = [
+    "/kaggle/input/pstu-data-thon-2026-vol-1",
+    "pstu-data-thon-2026-vol-1",
+    "../input/pstu-data-thon-2026-vol-1",
 ]
+DATA_DIR = next(d for d in CANDIDATE_DIRS if os.path.exists(os.path.join(d, "train.csv")))
+```
 
-# keep the first of each identical pair, drop the second
-DUPLICATE_COLS = [
-    "is_pump_draw_dry",                      # ≡ has_dust_accumulation_on_panels
-    "count_battery_failures",                # ≡ count_pump_motor_faults
-    "trend_maintenance_claim_count_1y3",     # ≡ trend_maintenance_cost_increase_1y3
-    "trend_repair_claim_count_1y3",          # ≡ trend_repair_cost_increase_1y3
-    "trend_expense_transaction_count_1y3",   # ≡ trend_outgoing_expense_increase_1y3
-    "trend_internal_in_count_1y3",           # ≡ trend_internal_transfer_in_1y3
+Same notebook must run locally and on Kaggle without edits.
+
+### 2. Column contract — constants, defined once
+
+```python
+CAT_COLS = ["feat_142", "feat_157", "feat_318", "feat_320", "feat_325", "feat_337"]
+
+SENTINEL_NEG = {"feat_109": -999999}          # measured: 116 train / 89 test rows
+SENTINEL_BIG_COLS = [                          # measured: 9999999999 across 23 columns
+    "feat_11","feat_21","feat_26","feat_30","feat_31","feat_36","feat_74","feat_77",
+    "feat_96","feat_124","feat_135","feat_144","feat_149","feat_158","feat_171","feat_196",
+    "feat_204","feat_226","feat_301","feat_315","feat_330","feat_336","feat_340",
 ]
-
-def preprocess(df):
-    df = df.drop(columns=CONSTANT_COLS + DUPLICATE_COLS, errors="ignore")
-    # the confirmed sentinel — a negative farmer count is physically impossible
-    df["base_number_of_dependent_farmers"] = (
-        df["base_number_of_dependent_farmers"].replace(-999999, np.nan))
-    return df
 ```
 
-Notes:
+`DROP_COLS` — the 44 safe drops — should be **read from
+`../dataset_exploration/04_constant_duplicate_report.txt`**, or recomputed from train inside the
+notebook. Do not hand-transcribe 44 column names; that is exactly where a typo hides.
 
-- **Do not impute the sentinel** if you're using LightGBM / XGBoost / CatBoost /
-  HistGradientBoosting — they all handle `NaN` natively and will learn a split for it.
-  Only impute (median) for models that can't, e.g. linear or distance-based.
-- **Winsorizing the heavy-tailed sensor columns is optional.** Columns like
-  `sensor_average_daily_pump_runtime_hours` and `sensor_wind_speed_kmh` have physically
-  implausible round-number tails (90000, 150000, 300000…). Trees are invariant to
-  monotone transforms, so this only matters for linear/NN members of an ensemble.
-  Don't bother for the GBDT path.
-- Dropping the 12 columns is safe but worth roughly nothing on its own — it's for
-  cleanliness and speed, not score.
-
-## CV protocol
+### 3. Preprocessing function — one function, both splits
 
 ```python
-from sklearn.model_selection import StratifiedKFold
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+def preprocess(df, drop_cols, cat_maps=None):
+    """cat_maps=None -> fit mode (train). cat_maps=dict -> transform mode (test/hidden)."""
 ```
 
-- **`StratifiedKFold`, not `GroupKFold`.** There is no recoverable station id — the
-  apparent `base_*` groups are coincidental collisions on a dominant fill value
-  (`base_distance_from_coastal_river_km = 0.509…` in 19.5% of rows). Within-group target
-  rates scatter around the global 5% rate rather than clustering. Details in
-  `dataset_exploration/pseudo_station_report.txt`.
-- **No adversarial reweighting needed.** Train and test are iid (adversarial AUC 0.4985).
-  Your CV score should track the leaderboard closely — which also means a large CV/LB gap
-  is a signal that *you* introduced leakage, not that the split is unfair.
-- **Use the same seed and fold assignment everywhere** so OOF predictions from different
-  models can be stacked and compared. Consider repeating with 2–3 seeds and averaging when
-  comparing close candidates: with only 2,406 positives, fold noise on the composite is
-  roughly ±0.003–0.005, so differences smaller than that are not real.
+It must:
 
-## Submission format — traps
+- drop `drop_cols`
+- replace `-999999` in `feat_109` and `9999999999` in the 23 columns with `np.nan`
+- encode the 6 categorical columns, **mapping any unseen level to a reserved code** (`-1`, or
+  the train global mean for target encoding — never `NaN`-by-accident and never an error)
+- return `(X, cat_maps)` so the fitted maps can be pickled and reloaded by the inference notebook
 
-The spec is strictly enforced. Three columns, exact names, exact order:
+**Critical:** fit the categorical maps on **train only**. Fitting on `pd.concat([train, test])`
+leaks test-set level identity and — more practically — cannot be reproduced on the hidden test,
+which you will never see at training time.
 
-```
-id,Target_Binary,Target_Probability
-0,0,0.0123
-1,1,0.8745
-```
+Note the sentinel replacement is worth doing even for tree models that handle raw values: with
+`9999999999` left in, a split threshold has to sit between a genuine value and a 10-billion
+sentinel, wasting a split and distorting the histogram binning that LightGBM/HistGBM use.
 
-- **`id` is 0-indexed row order of `test.csv`.** There is no id column in the raw file —
-  row $i$ gets id $i$. Never shuffle test rows.
-- **Exactly 12,032 rows** plus header.
-- **`Target_Probability` must be strictly inside (0.0, 1.0)** and contain no `NaN` or
-  `inf`. Some models output exact 0.0 or 1.0 — always clip:
-  ```python
-  proba = np.clip(proba, 1e-6, 1 - 1e-6)
-  ```
-- `Target_Binary` must be integer `0`/`1`, not boolean or float.
-
-A validation function is worth writing once:
+### 4. Pinned CV protocol
 
 ```python
-def validate_submission(sub, n_test=12032):
-    assert list(sub.columns) == ["id", "Target_Binary", "Target_Probability"]
-    assert len(sub) == n_test
-    assert sub["id"].tolist() == list(range(n_test))
-    assert sub["Target_Binary"].isin([0, 1]).all()
-    assert sub["Target_Probability"].between(0, 1, inclusive="neither").all()
-    assert np.isfinite(sub["Target_Probability"]).all()
-    return True
+SEED = 42
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
 ```
 
-An "Evaluation Error" scores nothing at all — this check is cheaper than a wasted submission.
+Stratified is required — 3.96% positives means an unstratified fold can swing the per-fold
+positive count meaningfully. Generate the fold indices **once**, save them, and reuse across
+every experiment. Measured baseline per-fold AUC spread was ±0.0060; that is the noise floor
+you are comparing ideas against, so any "improvement" under ~0.006 AUC needs seed-averaging
+before you believe it.
 
-## Kaggle resources
+### 5. Metric module
 
-The dataset is small. Budget accordingly:
+```python
+def score_both(y_true, y_pred_binary):
+    return {
+        "binary_f1": f1_score(y_true, y_pred_binary, average="binary", zero_division=0),
+        "macro_f1":  f1_score(y_true, y_pred_binary, average="macro",  zero_division=0),
+    }
+```
 
-| Task | Hardware | Time |
-|---|---|---|
-| Load + preprocess | CPU | <10 s |
-| LightGBM 5-fold CV | CPU | 1–3 min |
-| CatBoost 5-fold CV | CPU | 3–8 min |
-| Full ensemble + threshold search | CPU | 15–30 min |
-| TabNet / FT-Transformer 5-fold | GPU | 20–40 min |
+Report both, always, until the LB probe resolves the ambiguity. Also log OOF AUC — not because
+it is graded (it is not) but because it is the lowest-variance signal for "did this model
+actually get better," which F1-at-a-threshold is not.
 
-**Don't use the GPU for tree models.** At 48k × 286, GPU LightGBM is typically slower
-than CPU because of launch overhead. Kaggle's CPU notebooks have no weekly quota, unlike
-the ~30 GPU hours/week — so keep iterating on CPU and save GPU quota for the one
-neural experiment in [../04-ensemble-diversity/](../04-ensemble-diversity/), if you get to it.
+### 6. Submission builder + validator
 
-Memory is not a concern: peak usage for the full pipeline is well under 4 GB against
-Kaggle's ~30 GB.
+```python
+sub = sample_submission.copy()
+sub["TARGET"] = preds          # test.csv row order matches sample_submission — measured
+assert len(sub) == 60654
+assert list(sub.columns) == ["id", "TARGET"]
+assert sub["TARGET"].isin([0, 1]).all()
+assert sub["id"].equals(sample_submission["id"])
+```
+
+`id` comes from `test.csv`'s **last column** and is neither `0..n-1` nor contiguous. Never
+regenerate it with `range()`. Run the validator on every submission, every time.
+
+## Kaggle cost
+
+Minutes. `pd.read_csv` on the 128 MB train file takes seconds; no streaming needed
+(measured ~235 MB in RAM). CPU only.
+
+## Honest expected gain
+
+**Prerequisite — no standalone gain.** But skipping the categorical fallback or the submission
+validator has a measured downside of *the entire 40% hidden-test component*.
+
+## When to abandon
+
+Never. If any part of this is taking more than 2 hours, simplify it (drop fewer columns, use
+plain ordinal encoding) and move on to [01](../01-threshold-engine/) — but do not skip the
+unseen-level fallback or the submission validator under any time pressure.

@@ -1,1 +1,19 @@
+# competition data (current)
+pstu-data-thon-2026-vol-1/
+
+# competition data (archived / previous)
 dataset/
+
+# generated artifacts from the withdrawn competition
+works.old/dataset_exploration/converted_*.csv
+
+# generated EDA artifacts
+dataset_exploration/converted_*.csv
+
+# submissions
+submission*.csv
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

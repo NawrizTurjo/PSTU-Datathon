@@ -16,7 +16,7 @@ import numpy as np
 import os
 
 INPUT_PATH  = 'submission.csv'
-THRESHOLD   = 0.375
+THRESHOLD   = 0.25
 threshold_str = str(THRESHOLD).replace('.', '_')
 OUTPUT_PATH = f'submission_binary_{threshold_str}.csv'
 

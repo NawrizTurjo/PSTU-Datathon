@@ -10,9 +10,6 @@ works.old/dataset_exploration/converted_*.csv
 # generated EDA artifacts
 dataset_exploration/converted_*.csv
 
-# submissions
-submission*.csv
-
 # python
 __pycache__/
 *.pyc

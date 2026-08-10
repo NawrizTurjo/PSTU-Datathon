@@ -414,6 +414,45 @@ Three guards worth knowing about, each targeting a measured failure mode:
 is faster, CPU notebooks are unmetered, and the GPU histogram path is not reproducibly
 deterministic, which the inference notebook's assertion would catch.
 
+### Run-3 & Run-4: external/alternate-pipeline submissions — ✅ MEASURED (2026-08-10)
+
+Two more real Kaggle submissions, archived at `results/run-3/` and `results/run-4/` (each with
+its own `README.md` — full detail there, this is the summary). **Neither is built from
+`solution/pstu_train.py`** — both are a separately authored pipeline (LightGBM+XGBoost+CatBoost
+blend with heavy feature engineering, later a leaner CatBoost-only rewrite). Recorded here
+because they are real, measured data points about this competition's data and metric, even
+though they don't share code with this project's own solution.
+
+| | run-3 (V1) | run-4 (V2, fixes run-3) |
+|---|---|---|
+| Models | LightGBM + XGBoost + CatBoost blend, F1-calibrated | CatBoost only, 3-seed ensemble, no calibration |
+| Categorical encoding | 5-fold OOF target encoding | native CatBoost handling (label-encoded) |
+| Extra features | 22 row-stats + 28 KMeans-cluster feats + PCA(50) | 6 row-stats only, no KMeans, no PCA |
+| Imbalance | SMOTE(0.5) | SMOTE(0.3) + `scale_pos_weight=12` |
+| CV | 10-fold | 5-fold |
+| OOF/CV F1 | 0.3624 (ensemble) / 0.373 (best single model) | 0.28724 (probability-avg ensemble) |
+| Test positive rate vs train (3.96%) | — | **7.05%, i.e. 1.78× train** (inflated, not shrunk) |
+| **Public LB** | **0.195681511470** | **0.225758329189** ← best LB measured so far, any pipeline |
+
+Run-4 is a direct, documented fix of run-3 (its own notebook contains a "V1 Post-Mortem" table
+diagnosing calibration-shift leakage, target-encoding leakage, SMOTE over-aggression, KMeans
+train/test peeking, weak regularization, and a "model-diversity trap" from blending 3 differently
+calibrated models). Removing all of that dropped OOF from 0.36 to 0.29 but **raised LB from
+0.1957 to 0.2258** — the CV→LB relative gap shrank from ~46% to ~21%. This is an independent
+confirmation, from a completely different codebase, of this project's own central finding
+(`ideas/README.md`, `ideas/04-shift-robustness/`): on this dataset, a lower/honester OOF that
+hasn't absorbed leakage-prone tricks transfers to LB far better than a higher one that has.
+
+**Run-4's 0.2258 is now the best real LB score recorded anywhere in this project**, ahead of the
+project's own run-1 (0.1849, `solution/pstu_train.py`). Run-2 (`solution/pstu_train.py`'s
+shift-aware arm search, OOF 0.3957) has still not been submitted to LB — see the Run-2 section
+above. Ceiling context from `ideas/README.md` (top public-LB team 0.2955, six teams clustered
+0.20–0.30 as of 2026-08-09) puts run-4 inside that cluster.
+
+See `results/run-3/README.md` and `results/run-4/README.md` for full configs, root-cause tables,
+and "to improve on this later" notes (kept in those files, not acted on here, per the scope of
+this documentation pass).
+
 #### Original Stage 4 spec (kept for reference)
 
 One end-to-end Kaggle notebook, plus a `# %%` cell-marked `.py` twin for diffing.
@@ -500,3 +539,9 @@ remains is leaderboard work and the graded deliverables.
 6. Reserve time before the 13 Aug deadline for the **code submission and presentation** —
    with the inference notebook that is 50% of the final mark and none of it is a leaderboard
    activity.
+7. ✅ **Two more real submissions recorded (2026-08-10), from an external/alternate pipeline —
+   not `solution/pstu_train.py`.** LB **0.2258** (run-4) is now the best LB score measured
+   anywhere in this project, ahead of run-1's 0.1849. See "Run-3 & Run-4" above and
+   `results/run-3/README.md` / `results/run-4/README.md` for the full audit — the headline is an
+   independent confirmation that removing calibration/target-encoding/KMeans leakage traded OOF
+   0.36→0.29 for LB 0.196→0.226, the same OOF-vs-LB lesson idea 04 is built around.

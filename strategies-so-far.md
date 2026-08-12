@@ -68,4 +68,25 @@ This document provides a comprehensive audit of all major notebook versions, the
 ## Key Takeaways for the Final Push (0.22 $\rightarrow$ 0.30)
 1. **Simplicity over Complexity:** `FixIssuesV2` proved that clean features and strict fold validation beat over-engineered, complex pipelines (Omega/Grandmaster).
 2. **Proper Thresholding is Crucial:** The score jumps massively between $t=0.25$ and $t=0.375$. We must continue exporting fine-grained probe grids.
-3. **Model Diversity is Missing:** We have exhaustively optimized CatBoost. To bridge the gap to 0.303, we need to introduce **LightGBM** and **XGBoost** trained on this exact `FixIssuesV2` feature space, and ensemble their predictions.
+3. **Model Diversity is Missing:** We have exhaustively optimized CatBoost. To bridge the gap to 0.303, we need to introduce **LightGBM** and **XGBoost** trained on this exact `FixIssuesV2` feature space, and ensemble their predictions. (Completed via `master-extended`).
+
+---
+
+## 🚀 Future Ideas & Brainstorming (Based on the `FixIssuesV2` Core)
+Since the `master-extended` notebook might take a few hours to run on Kaggle, here are four alternative notebook strategies we could run in parallel. All of them build on the proven data pipeline (QuantileTransformer + Row Stats + SMOTE + Raw Features) but change the modeling approach:
+
+### Idea 1: Deep Learning / TabNet Ensemble
+**The Concept:** Tree models (XGBoost, CatBoost) are great, but they all learn in similar ways (axis-parallel splits). Neural networks learn linear combinations and smooth manifolds.
+**The Strategy:** Build a simple Multi-Layer Perceptron (MLP) or use Google's TabNet on the exact same data. Even if the Neural Net scores slightly lower on its own, averaging its predictions with a Tree model usually causes a massive jump in LB score because their errors are totally uncorrelated.
+
+### Idea 2: K-Means Cluster Features (Distance to Minority)
+**The Concept:** We have a severe 96:4 imbalance. We want the model to easily identify where the 4% hides.
+**The Strategy:** Run a KMeans clustering ($K=10$ or $20$) on the numeric features. Find which cluster centroids contain the highest percentage of the minority class. Add a new feature: `distance_to_deadliest_cluster`. Trees love this because it gives them a direct compass pointing toward the positive class.
+
+### Idea 3: Explicit Feature Interactions (Polynomials done right)
+**The Concept:** We stripped out interactions because Omega over-engineered them, but trees still struggle to divide features (e.g., $A / B$).
+**The Strategy:** Take *only the Top 20* most important features (measured from CatBoost's `.get_feature_importance()`) and create basic math interactions ($A+B$, $A-B$, $A \times B$, $A \div (B + \epsilon)$). This gives the tree the exact logic it would otherwise need hundreds of splits to learn naturally.
+
+### Idea 4: Swap SMOTE for BorderlineSMOTE / ADASYN
+**The Concept:** Standard SMOTE blindly draws lines between minority points, which can accidentally place synthetic points deep inside the majority class territory.
+**The Strategy:** Swap `SMOTE(0.3)` for `BorderlineSMOTE`. This algorithm only generates synthetic points near the decision boundary (the "border"), making it much harder for the classifier to confuse the two classes. We change literally one line of code in the CV loop.

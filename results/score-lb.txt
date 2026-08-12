@@ -2,6 +2,8 @@
 
 Submission / Version                              Status      Author                LB Score        Description
 ------------------------------------------------------------------------------------------------------------------------------------------
+synthetic-fixissuesv2 - Version 3                  Complete    Nawriz Ahmed Turjo    0.225816887738  0.375 last of the day 😭😭
+synthetic-fixissuesv2 - Version 3                  Complete    Nawriz Ahmed Turjo    0.219312602291  -
 submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo    0.131578947368  from omega-synthetic one
 submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo    0.227966365618  version-2-synthetic-fixissues
 synthetic-fixissuesv2 - Version 2                  Complete    Nawriz Ahmed Turjo    0.194001276324  -

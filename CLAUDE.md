@@ -1,5 +1,12 @@
 # CLAUDE.md — project context
 
+> ## ➡️ See [`next-gen.md`](next-gen.md) for everything after Unbeatable_V6 (2026-08-12)
+>
+> Real LB scores for run-1/run-4/Unbeatable_V6 plus the newer Omega-V7/Grandmaster-V7 external
+> runs, the diagnosed pseudo-labeling failure in Unbeatable_V6, and the in-progress
+> `synthetic-test-distr.ipynb` (train/test distribution-matching augmentation) are tracked there,
+> not here. This file stays frozen as the Stage 1-4 record.
+
 > ## 🆕 THIS IS A NEW COMPETITION (2026-08-09)
 >
 > The previous competition's dataset was withdrawn for leaks. The organizers replaced it with

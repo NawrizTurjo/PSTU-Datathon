@@ -1,0 +1,29 @@
+# Kaggle Public Leaderboard Scores (Order: Latest First)
+
+Submission / Version                              Status      Author              Submitted    LB Score
+----------------------------------------------------------------------------------------------------------
+synthetic-Winning_Blueprint_Omega_V7 - Version 1    Complete    Nawriz Ahmed Turjo  22s ago      0.200626959247
+synthetic-test-distr - Version 1                  Complete    Nawriz Ahmed Turjo  1h ago       0.119691119691
+submission_t0_30.csv                              Complete    Ahmed Sajid Hasan   20h ago      0.158526821457
+submission_t0_25.csv                              Complete    Ahmed Sajid Hasan   20h ago      0.181946403385
+Winning_Blueprint_Omega_V7 - Version 2            Error       Ahmed Sajid Hasan   20h ago      Error
+Winning_Blueprint_Omega_V7 - Version 2            Complete    Ahmed Sajid Hasan   20h ago      0.194587628865
+submission_binary_convert.csv                     Complete    Ahmed Sajid Hasan   1d ago       0.192846034214
+Grandmaster_Blueprint_V7 - Version 3              Complete    Ahmed Sajid Hasan   1d ago       0.180811808118
+Unbeatable_V6 - Version 2                         Complete    Ahmed Sajid Hasan   1d ago       0.109275730622
+unbeatable-v6 - Version 1                         Complete    Nawriz Ahmed Turjo  1d ago       0.124121779859
+submission_binary.csv                             Complete    Ahmed Sajid Hasan   2d ago       0.081696870811
+submission_binary.csv                             Complete    Ahmed Sajid Hasan   2d ago       0.126397019691
+submission_binary.csv                             Complete    Ahmed Sajid Hasan   2d ago       0.035950804162
+submission_binary_best_threshold_changed.csv     Complete    Nawriz Ahmed Turjo  2d ago       0.209515096065
+submission_binary_0_65.csv                        Complete    Nawriz Ahmed Turjo  2d ago       0.064102564102
+submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo  2d ago       0.223413258110
+Wining_Version3 - Version 1                       Complete    Ahmed Sajid Hasan   2d ago       0.192330383480
+PTSU-Datahon-v1-run-4 - run-4                     Complete    Nawriz Ahmed Turjo  2d ago       0.168152866242
+FixIssuesv2 - Version 4                           Complete    Ahmed Sajid Hasan   3d ago       0.225758329189
+submission_binary.csv                             Complete    Ahmed Sajid Hasan   3d ago       0.195681511470
+Wining_Notebook1 - Version 4                      Error       Ahmed Sajid Hasan   3d ago       Error
+Wining_Notebook1 - Version 4                      Error       Ahmed Sajid Hasan   3d ago       Error
+run-2-PTSU.csv                                    Complete    Nawriz Ahmed Turjo  3d ago       0.184931506849
+run-1-PTSU.csv                                    Complete    Nawriz Ahmed Turjo  3d ago       0.184940554821
+all_zeros_submission.csv                          Complete    Nawriz Ahmed Turjo  3d ago       0.000000000000

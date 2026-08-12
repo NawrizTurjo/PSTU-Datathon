@@ -1,0 +1,33 @@
+{
+  "final_stage": "stage2_synth_augmented",
+  "model": "CatBoost (depth=5, l2_reg=5.0)",
+  "ensemble_seeds": [
+    42,
+    123,
+    456
+  ],
+  "smote_strategy": 0.3,
+  "n_synthetic_generated": 60654,
+  "n_numeric_cols_integer_valued": 238,
+  "n_numeric_cols_total": 301,
+  "jitter_frac": 0.001,
+  "synth_vs_test_auc": 0.8559703550878632,
+  "synth_vs_train_auc": 0.9109046860153035,
+  "baseline_shift_auc": 0.633735304127395,
+  "final_shift_auc": 0.6325820995798365,
+  "gap_closed": true,
+  "pseudo_pos_threshold_used": 0.75,
+  "pseudo_neg_threshold_used": 0.1,
+  "synth_augmentation_skipped": false,
+  "n_synthetic_accepted": 858,
+  "n_synthetic_accepted_positive": 78,
+  "n_synthetic_accepted_negative": 780,
+  "stage1_threshold": 0.5150000000000001,
+  "stage1_f1": 0.2912962096396818,
+  "stage2_threshold": 0.5300000000000001,
+  "stage2_f1": 0.3086903635626436,
+  "final_threshold": 0.5300000000000001,
+  "final_oof_f1": 0.3086903635626436,
+  "submission_positive_rate": 0.04575131071322583,
+  "submission_n_positive": 2775
+}

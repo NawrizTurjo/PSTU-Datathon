@@ -12,9 +12,12 @@ This directory (`final-submission/`) contains all required assets for the final 
 
 | File Name | Purpose / Description |
 |---|---|
-| **`FINAL_SUBMISSION.ipynb`** | **Primary Submission Notebook.** Contains full Markdown documentation (EDA summary, baseline-to-final progression, technical decisions) + complete execution code. Upload this directly to Kaggle Code. |
-| **`inference_pipeline.py`** | **Standalone Inference & Retraining Pipeline.** A CLI-ready Python script for organizers to re-test the solution on hidden private datasets. |
-| **`PRESENTATION_OUTLINE.md`** | **YouTube Presentation Script & Slide Guide.** Complete section-by-section outline and timing guide for the required video presentation. |
+| **`FINAL_SUBMISSION.ipynb`** | **Primary Submission Notebook.** Full Markdown documentation (EDA, baseline, progression) + complete execution code & multi-threshold probing grid. Upload directly to Kaggle Code. |
+| **`INFERENCE_NOTEBOOK.ipynb`** | **Official Hidden Test Inference Notebook.** Clean, standalone Jupyter notebook for direct upload & execution on Kaggle for 40% hidden test set evaluation. |
+| **`submission.csv`** | **Winning Predictions CSV.** Hard binary predictions ($t=0.375$) hitting **0.227966 LB** ready for direct Kaggle Submit Predictions page. |
+| **`inference_pipeline.py`** | **Standalone CLI Inference Script.** CLI Python script for organizers to re-test on hidden private datasets. |
+| **`PRESENTATION_OUTLINE.md`** | **YouTube Presentation Script & Slide Guide.** Section-by-section outline and timing guide for required video presentation. |
+| **`inference-rules.md`** | **Exhaustive Inference Rules & Procedures.** Complete breakdown of evaluation components, Kaggle notebook procedures, artifact sharing, and disqualification safeguards. |
 | **`SUBMISSION_GUIDE.md`** | This document. Step-by-step instructions for Kaggle code submission and private dataset evaluation. |
 
 ---

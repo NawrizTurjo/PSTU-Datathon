@@ -119,7 +119,7 @@ CFG = {
     'threshold_max': 0.99,
     'threshold_step': 0.0025,
     'winning_threshold': 0.375,         # Official 0.227966 LB winner threshold
-    'probe_thresholds': [0.325, 0.35, 0.36, 0.375, 0.39, 0.40, 0.425],
+    'probe_thresholds': [0.325, 0.35, 0.36, 0.375, 0.39, 0.40, 0.42, 0.45, 0.475, 0.495],
     'enable_stage2': True,
 }
 

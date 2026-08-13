@@ -2,6 +2,10 @@
 
 Submission / Version                              Status      Author                LB Score        Description
 ------------------------------------------------------------------------------------------------------------------------------------------
+submission_binary_0_5.csv                       Complete    Nawriz Ahmed Turjo    0.210006176652  0.5 version for forge-v4
+master-final-version-extended - Version 1       Complete    Nawriz Ahmed Turjo    0.212765957446  -
+master-final-feature-forge - retry              Complete    Nawriz Ahmed Turjo    0.217908082408  enable_stage2=True
+master-final-version-extended - Version 2       Complete    Nawriz Ahmed Turjo    0.194407456724  -
 synthetic-fixissuesv2 - Version 3                  Complete    Nawriz Ahmed Turjo    0.225816887738  0.375 last of the day 😭😭
 synthetic-fixissuesv2 - Version 3                  Complete    Nawriz Ahmed Turjo    0.219312602291  -
 submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo    0.131578947368  from omega-synthetic one

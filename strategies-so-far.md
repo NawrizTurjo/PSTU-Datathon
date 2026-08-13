@@ -87,6 +87,14 @@ Since the `master-extended` notebook might take a few hours to run on Kaggle, he
 **The Concept:** We stripped out interactions because Omega over-engineered them, but trees still struggle to divide features (e.g., $A / B$).
 **The Strategy:** Take *only the Top 20* most important features (measured from CatBoost's `.get_feature_importance()`) and create basic math interactions ($A+B$, $A-B$, $A \times B$, $A \div (B + \epsilon)$). This gives the tree the exact logic it would otherwise need hundreds of splits to learn naturally.
 
-### Idea 4: Swap SMOTE for BorderlineSMOTE / ADASYN
-**The Concept:** Standard SMOTE blindly draws lines between minority points, which can accidentally place synthetic points deep inside the majority class territory.
-**The Strategy:** Swap `SMOTE(0.3)` for `BorderlineSMOTE`. This algorithm only generates synthetic points near the decision boundary (the "border"), making it much harder for the classifier to confuse the two classes. We change literally one line of code in the CV loop.
+## 7. Master Extended Ensemble & Feature Forge
+* **Folders:** `master-final-version-extended-version-1`, `master-final-version-extended-version-2`, `master-final-feature-forge-v4`
+* **Best LB Score:** `0.2179` (Forge v4 at $t=0.375$)
+* **Strategy Used:** 
+  * Replaced CatBoost-only with a 3-model (CatBoost + LightGBM + XGBoost) soft-voting ensemble.
+  * *Extended V1* (7h 30m): Scored `0.2127`.
+  * *Extended V2* (53m): Leaner config. Scored `0.1944`.
+  * *Feature Forge V4* (3h 38m): Included KMeans distance mapping and top-10 math interactions + SMOTENC + Stage 2. Scored `0.2179`.
+* **What Went Well:** The code ran successfully, proving our fixes to `SMOTENC` and categorical features held up.
+* **What Went Wrong / To Improve:** The scores (`0.194 - 0.217`) failed to beat our simpler, single-model CatBoost `synthetic-fixissuesv2-winner` (`0.2279`). This proves that for this specific dataset and extreme class imbalance, a single highly-regularized CatBoost model with aggressive SMOTE and basic row-stats generalizes better to the hidden public LB than complex ensembles or deep feature engineering.
+* **Conclusion:** The `synthetic-fixissuesv2-winner` configuration is officially our best model. We must use it for the final submission.

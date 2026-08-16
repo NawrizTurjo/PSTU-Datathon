@@ -1,42 +1,41 @@
-# Kaggle Public Leaderboard Scores (Order: Latest First)
+# PSTU DataThon 2026 — Final Leaderboard Standings (Private vs Public)
 
-Submission / Version                              Status      Author                LB Score        Description
+Submission / Version                              Status      Private LB      Public LB       Description
 ------------------------------------------------------------------------------------------------------------------------------------------
-submission_binary_0_5.csv                       Complete    Nawriz Ahmed Turjo    0.210006176652  0.5 version for forge-v4
-master-final-version-extended - Version 1       Complete    Nawriz Ahmed Turjo    0.212765957446  -
-master-final-feature-forge - retry              Complete    Nawriz Ahmed Turjo    0.217908082408  enable_stage2=True
-master-final-version-extended - Version 2       Complete    Nawriz Ahmed Turjo    0.194407456724  -
-synthetic-fixissuesv2 - Version 3                  Complete    Nawriz Ahmed Turjo    0.225816887738  0.375 last of the day 😭😭
-synthetic-fixissuesv2 - Version 3                  Complete    Nawriz Ahmed Turjo    0.219312602291  -
-submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo    0.131578947368  from omega-synthetic one
-submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo    0.227966365618  version-2-synthetic-fixissues
-synthetic-fixissuesv2 - Version 2                  Complete    Nawriz Ahmed Turjo    0.194001276324  -
-synthetic-fixissuesv2 - Version 1                  Complete    Nawriz Ahmed Turjo    0.195707070707  -
-synthetic-fixissuesv2 - Version 1                  Error       Nawriz Ahmed Turjo    Error           -
-submission_t0_25.csv                              Complete    Nawriz Ahmed Turjo    0.185003503854  -
-submission_t0_35.csv                              Complete    Nawriz Ahmed Turjo    0.133213321332  -
-Winning_Blueprint_Omega_V7 - Version 1            Complete    Nawriz Ahmed Turjo    0.200626959247  omega synthetic
-synthetic-test-distr - Version 1                  Complete    Nawriz Ahmed Turjo    0.119691119691  -
-submission_t0_30.csv                              Complete    Ahmed Sajid Hasan     0.158526821457  -
-submission_t0_25.csv                              Complete    Ahmed Sajid Hasan     0.181946403385  -
-Winning_Blueprint_Omega_V7 - Version 2            Error       Ahmed Sajid Hasan     Error           -
-Winning_Blueprint_Omega_V7 - Version 2            Complete    Ahmed Sajid Hasan     0.194587628865  -
-submission_binary_convert.csv                     Complete    Ahmed Sajid Hasan     0.192846034214  -
-Grandmaster_Blueprint_V7 - Version 3              Complete    Ahmed Sajid Hasan     0.180811808118  -
-Unbeatable_V6 - Version 2                         Complete    Ahmed Sajid Hasan     0.109275730622  -
-unbeatable-v6 - Version 1                         Complete    Nawriz Ahmed Turjo    0.124121779859  -
-submission_binary.csv                             Complete    Ahmed Sajid Hasan     0.081696870811  -
-submission_binary.csv                             Complete    Ahmed Sajid Hasan     0.126397019691  -
-submission_binary.csv                             Complete    Ahmed Sajid Hasan     0.035950804162  -
-submission_binary_best_threshold_changed.csv     Complete    Nawriz Ahmed Turjo    0.209515096065  -
-submission_binary_0_65.csv                        Complete    Nawriz Ahmed Turjo    0.064102564102  -
-submission_binary_0_375.csv                       Complete    Nawriz Ahmed Turjo    0.223413258110  from the 0.22 one with 0.375 threshold set
-Wining_Version3 - Version 1                       Complete    Ahmed Sajid Hasan     0.192330383480  -
-PTSU-Datahon-v1-run-4 - run-4                     Complete    Nawriz Ahmed Turjo    0.168152866242  -
-FixIssuesv2 - Version 4                           Complete    Ahmed Sajid Hasan     0.225758329189  -
-submission_binary.csv                             Complete    Ahmed Sajid Hasan     0.195681511470  -
-Wining_Notebook1 - Version 4                      Error       Ahmed Sajid Hasan     Error           -
-Wining_Notebook1 - Version 4                      Error       Ahmed Sajid Hasan     Error           -
-run-2-PTSU.csv                                    Complete    Nawriz Ahmed Turjo    0.184931506849  -
-run-1-PTSU.csv                                    Complete    Nawriz Ahmed Turjo    0.184940554821  -
-all_zeros_submission.csv                          Complete    Nawriz Ahmed Turjo    0.000000000000  -
+submission_t0_36.csv (Final-Submission-PTSU v2)  Complete    0.226722777485  0.226472374013  t=0.36 threshold probe
+submission_t0_360.csv (Feature Forge v2)          Complete    0.219021997151  0.212734082397  t=0.36 threshold probe
+submission_t0_400.csv (Feature Forge v2)          Complete    0.220173335791  0.218150087260  t=0.40 threshold probe
+submission_t0_40.csv (Final-Submission-PTSU v2)  Complete    0.227946916471  0.224809021462  t=0.40 threshold probe
+Final-Submission-PTSU - Version 2                 Complete    0.225391498881  0.225816887738  🏆 SELECTED SUBMISSION 1 (WINNER)
+master-final-feature-forge - Version 2            Complete    0.223189808095  0.209125475285  Feature Forge v2 base
+submission_binary_0_5.csv                         Complete    0.191285866099  0.210006176652  0.5 version for forge-v4
+master-final-version-extended - Version 1       Complete    0.215553121577  0.212765957446  -
+master-final-feature-forge - retry              Complete    0.218907140462  0.217908082408  🏆 SELECTED SUBMISSION 2
+master-final-version-extended - Version 2       Complete    0.187659937446  0.194407456724  -
+synthetic-fixissuesv2 - Version 3                  Complete    0.225391498881  0.225816887738  0.375 last of the day
+synthetic-fixissuesv2 - Version 3                  Complete    0.207939508506  0.219312602291  -
+submission_binary_0_375.csv                       Complete    0.105015673981  0.131578947368  from omega-synthetic one
+submission_binary_0_375.csv                       Complete    0.225610578869  0.227966365618  version-2-synthetic-fixissues
+synthetic-fixissuesv2 - Version 2                  Complete    0.194436794271  0.194001276324  -
+synthetic-fixissuesv2 - Version 1                  Complete    0.195055691388  0.195707070707  -
+submission_t0_25.csv                              Complete    0.158239143367  0.185003503854  -
+submission_t0_35.csv                              Complete    0.120805369127  0.133213321332  -
+Winning_Blueprint_Omega_V7 - Version 1            Complete    0.167906482465  0.200626959247  omega synthetic
+synthetic-test-distr - Version 1                  Complete    0.115292233787  0.119691119691  -
+submission_t0_30.csv                              Complete    0.137954239569  0.158526821457  -
+submission_t0_25.csv                              Complete    0.160857908847  0.181946403385  -
+Winning_Blueprint_Omega_V7 - Version 2            Complete    0.169677066228  0.194587628865  -
+submission_binary_convert.csv                     Complete    0.181017397049  0.192846034214  -
+Grandmaster_Blueprint_V7 - Version 3              Complete    0.172942092962  0.180811808118  -
+Unbeatable_V6 - Version 2                         Complete    0.114149190337  0.109275730622  -
+unbeatable-v6 - Version 1                         Complete    0.122845350813  0.124121779859  -
+submission_binary_best_threshold_changed.csv     Complete    0.217906389590  0.209515096065  -
+submission_binary_0_65.csv                        Complete    0.091402714932  0.064102564102  -
+submission_binary_0_375.csv                       Complete    0.228613569321  0.223413258110  PEAK PRIVATE LB SCORE
+Wining_Version3 - Version 1                       Complete    0.194340095166  0.192330383480  -
+PTSU-Datahon-v1-run-4 - run-4                     Complete    0.178620500137  0.168152866242  -
+FixIssuesv2 - Version 4                           Complete    0.218003412969  0.225758329189  -
+submission_binary.csv                             Complete    0.193231125253  0.195681511470  -
+run-2-PTSU.csv                                    Complete    0.167309403737  0.184931506849  -
+run-1-PTSU.csv                                    Complete    0.173416999429  0.184940554821  -
+all_zeros_submission.csv                          Complete    0.000000000000  0.000000000000  -
